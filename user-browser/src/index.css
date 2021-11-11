@@ -1,0 +1,18 @@
+body {
+  margin: 0;
+  font-family: "Nunito Sans", sans-serif !important;
+  font-size: 13px;
+  background-color: #ecf0f9;;
+}
+
+.navbar {
+  background-image: linear-gradient(#0d2649,#104066);
+}
+
+.content {
+  padding-top:15vh;
+}
+
+.app-title {
+  padding-left: 10px;
+}
