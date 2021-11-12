@@ -5,7 +5,6 @@ import {
 } from "@microsoft/microsoft-graph-client";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { User } from "microsoft-graph";
-import { getUserBrowserUserProperties } from "./UserBrowserUser"
 
 let graphClient: Client | undefined = undefined;
 
@@ -40,7 +39,7 @@ export async function getUsers(
 
   let response: PageCollection = await graphClient!
     .api("/users")
-    .select(getUserBrowserUserProperties())
+    .select("displayName,mail")
     .top(25)
     .get();
 

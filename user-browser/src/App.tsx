@@ -5,18 +5,10 @@ import ProvideAppContext from "./AppContext";
 import ErrorMessage from "./ErrorMessage";
 import NavBar from "./NavBar";
 import UserList from "./UserList";
-import "bootstrap/dist/css/bootstrap.css";
-import { MsalProvider } from "@azure/msal-react";
-import { IPublicClientApplication } from "@azure/msal-browser";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-type AppProps = {
-  pca: IPublicClientApplication;
-};
-
-export default function App({ pca }: AppProps) {
+export default function App() {
   return (
-    <MsalProvider instance={pca}>
       <ProvideAppContext>
         <Router>
           <NavBar />
@@ -30,6 +22,5 @@ export default function App({ pca }: AppProps) {
           </Container>
         </Router>
       </ProvideAppContext>
-    </MsalProvider>
   );
 }

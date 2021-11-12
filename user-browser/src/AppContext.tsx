@@ -6,25 +6,15 @@ import React, {
   useEffect,
 } from "react";
 
+import AppUser from "./types/AppUser"
+import AppError from "./types/AppError"
 import { getUser } from './GraphService';
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import config from "./Config";
+import { loginConfig, graphConfig } from "./AuthConfig"
 
-export interface AppUser {
-  displayName?: string;
-  email?: string;
-  avatar?: string;
-  timeZone?: string;
-  timeFormat?: string;
-}
-
-export interface AppError {
-  message: string;
-  debug?: string;
-}
-
+//Update AppContext type to add more global functions/properties
 type AppContext = {
   user?: AppUser;
   error?: AppError;
@@ -34,6 +24,10 @@ type AppContext = {
   clearError?: Function;
   authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
 };
+
+type ProvideAppContextProps = {
+  children: React.ReactNode;
+}
 
 const appContext = createContext<AppContext>({
   user: undefined,
@@ -49,10 +43,6 @@ export function useAppContext(): AppContext {
   return useContext(appContext);
 }
 
-interface ProvideAppContextProps {
-  children: React.ReactNode;
-}
-
 export default function ProvideAppContext({
   children,
 }: ProvideAppContextProps) {
@@ -60,6 +50,7 @@ export default function ProvideAppContext({
   return <appContext.Provider value={auth}>{children}</appContext.Provider>;
 }
 
+//AppContext function, add global functions here
 function useProvideAppContext() {
   const msal = useMsal();
   const [user, setUser] = useState<AppUser | undefined>(undefined);
@@ -77,20 +68,16 @@ function useProvideAppContext() {
     msal.instance as PublicClientApplication,
     {
       account: msal.instance.getActiveAccount()!,
-      scopes: config.scopes,
+      scopes: graphConfig.scopes,
       interactionType: InteractionType.Popup,
     }
   );
 
+  //Signin function
   const signIn = async () => {
-    await msal.instance.loginPopup({
-      scopes: config.scopes,
-      prompt: 'select_account'
-    });
+    await msal.instance.loginRedirect(loginConfig);
   
     const user = await getUser(authProvider);
- 
-    console.log(user)
 
     setUser({
       displayName: user.displayName || '',
@@ -98,11 +85,13 @@ function useProvideAppContext() {
     });
   };
 
+  //Signout function
   const signOut = async () => {
-    await msal.instance.logoutPopup();
+    await msal.instance.logoutRedirect()
     setUser(undefined);
   };
-  
+ 
+  //Ensures auth is reapplied on update
   useEffect(() => {
     const checkUser = async() => {
       if (!user) {
