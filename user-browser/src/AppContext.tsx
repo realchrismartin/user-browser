@@ -13,6 +13,7 @@ import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
 import { loginConfig, graphConfig } from "./AuthConfig"
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
 
 //Update AppContext type to add more global functions/properties
 type AppContext = {
@@ -20,6 +21,7 @@ type AppContext = {
   error?: AppError;
   signIn?: MouseEventHandler<HTMLElement>;
   signOut?: MouseEventHandler<HTMLElement>;
+  getToken?: Function;
   displayError?: Function;
   clearError?: Function;
   authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
@@ -34,6 +36,7 @@ const appContext = createContext<AppContext>({
   error: undefined,
   signIn: undefined,
   signOut: undefined,
+  getToken: undefined,
   displayError: undefined,
   clearError: undefined,
   authProvider: undefined,
@@ -90,6 +93,33 @@ function useProvideAppContext() {
     await msal.instance.logoutRedirect()
     setUser(undefined);
   };
+
+  const getToken = async(method : any) => {
+    const account = msal.instance.getActiveAccount();
+
+    if (!account) {
+      return ""
+    }
+
+    const tokenRequest = {
+        scopes: ["api://12ce6802-72f3-486a-a133-62bb577021bc/Test"],
+        account:account
+    }
+
+    try {
+        const response = await msal.instance.acquireTokenSilent({
+            ...tokenRequest
+        });
+    
+        return response.accessToken;
+    } catch (error) {
+       console.log(error);
+        if (InteractionRequiredAuthError.isInteractionRequiredError()) {
+            const response = await msal.instance.acquireTokenPopup(tokenRequest);
+            return response.accessToken;
+        }
+    }
+  }
  
   //Ensures auth is reapplied on update
   useEffect(() => {
@@ -120,6 +150,7 @@ function useProvideAppContext() {
     error,
     signIn,
     signOut,
+    getToken,
     displayError,
     clearError,
     authProvider,

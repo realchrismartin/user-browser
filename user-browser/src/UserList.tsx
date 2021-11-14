@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import UserBrowserUser, { getUserBrowserUser } from "./UserBrowserUser";
-import { getUsers } from "./GraphService";
+import { getUsers, getData } from "./GraphService";
 import { useAppContext } from "./AppContext";
 import { Table } from "react-bootstrap";
 import {
@@ -21,8 +21,16 @@ export default function UserList(props: RouteComponentProps) {
         setUsers(users.map((user) => getUserBrowserUser(user)))
       }
     };
+    
+    const loadUserData = async() => {
+      //TODO
+      let token = await app.getToken!();
+      let res = await getData(token);
+      console.log(res)
+    }
 
-    loadUsers();
+   // loadUsers();
+    loadUserData();
   });
 
   return (

@@ -31,6 +31,21 @@ export async function getUser(
 
   return user;
 }
+
+export async function getData(token : string): Promise<any> {
+
+  console.log("Token for request is " + token)
+  const pop = `Bearer ${token}`;
+
+  return fetch("http://localhost:8080/api/test", {
+    method: "GET",
+    mode: "cors",
+    cache: "no-cache",
+    headers: {
+      "Authorization":pop
+    }})
+}
+
 export async function getUsers(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
 ): Promise<User[]> {
