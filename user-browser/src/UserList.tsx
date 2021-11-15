@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import UserBrowserUser, { getUserBrowserUser } from "./UserBrowserUser";
-import { getUsers, getData } from "./GraphService";
+import UserBrowserUser, { getUserBrowserUsers } from "./UserBrowserUser";
+import { getAPIUsers, getDatabaseUsers } from "./GraphService";
 import { useAppContext } from "./AppContext";
 import { Table } from "react-bootstrap";
 import {
@@ -16,30 +16,33 @@ export default function UserList() {
   useEffect(() => {
     const loadUsers = async () => {
       if (app.user && !users) {
-        const users = await getUsers(app.authProvider!);
-        setUsers(users.map((user) => getUserBrowserUser(user)))
+        let token = await app.getToken!();
+        let apiUsers = await getAPIUsers(app.authProvider!);
+        let dbUsers = await getDatabaseUsers(token);
+        setUsers(getUserBrowserUsers(apiUsers, dbUsers));
       }
     };
-    
-    const loadUserData = async() => {
-      //TODO
-      let token = await app.getToken!();
-      let res = await getData(token);
-      console.log(res)
-    }
 
-   // loadUsers();
-    loadUserData();
+    loadUsers();
   });
 
   return (
     <div className="content">
-      <UnauthenticatedTemplate>
-        You are not logged in.</UnauthenticatedTemplate>
+      <UnauthenticatedTemplate>You are not logged in.</UnauthenticatedTemplate>
       <AuthenticatedTemplate>
         <Table striped bordered hover>
-          <tr><td>Display Name</td><td>E-mail</td></tr>
-          {users?.map((user) => (<tr><td>{user.displayName}</td>{user.mail}</tr>))}
+          <tr>
+            <td>Display Name</td>
+            <td>E-mail</td>
+            <td>NPI</td>
+          </tr>
+          {users?.map((user) => (
+            <tr>
+              <td>{user.displayName}</td>
+              <td>{user.mail}</td>
+              <td>{user.npiConfirmed}</td>
+            </tr>
+          ))}
         </Table>
       </AuthenticatedTemplate>
     </div>

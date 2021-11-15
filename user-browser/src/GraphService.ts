@@ -5,6 +5,7 @@ import {
 } from "@microsoft/microsoft-graph-client";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { User } from "microsoft-graph";
+import { DatabaseUser, getDatabaseUsersFromJson } from "./UserBrowserUser";
 
 let graphClient: Client | undefined = undefined;
 
@@ -32,21 +33,23 @@ export async function getUser(
   return user;
 }
 
-export async function getData(token : string): Promise<any> {
+export async function getDatabaseUsers(token : string): Promise<DatabaseUser[]> {
 
-  console.log("Token for request is " + token)
   const pop = `Bearer ${token}`;
 
-  return fetch("http://localhost:8080/api/data", {
+  let res = await fetch("http://localhost:8080/api/data", {
     method: "GET",
     mode: "cors",
     cache: "no-cache",
     headers: {
       "Authorization":pop
     }})
+
+  let json = await res.json()
+  return getDatabaseUsersFromJson(json);
 }
 
-export async function getUsers(
+export async function getAPIUsers(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
 ): Promise<User[]> {
 

@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/data", (req : Request ,res : Response) => { 
     sql.connect(config.sqlConfig).then((connectionPool : any ) => {
-        connectionPool.query("select * from test").then((dbResult : any) => {
+        connectionPool.query("select * from users").then((dbResult : any) => {
             res.send(dbResult.recordset);
         })
     }).catch((err : Error) => {
