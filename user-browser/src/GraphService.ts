@@ -37,7 +37,7 @@ export async function getData(token : string): Promise<any> {
   console.log("Token for request is " + token)
   const pop = `Bearer ${token}`;
 
-  return fetch("http://localhost:8080/api/test", {
+  return fetch("http://localhost:8080/api/data", {
     method: "GET",
     mode: "cors",
     cache: "no-cache",

@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 import ProvideAppContext from "./AppContext";
 import ErrorMessage from "./ErrorMessage";
 import NavBar from "./NavBar";
 import UserList from "./UserList";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function App() {
   return (
@@ -14,11 +13,9 @@ export default function App() {
           <NavBar />
           <Container>
             <ErrorMessage />
-            <Route
-              exact
-              path="/"
-              render={(props) => <UserList {...props} />}
-            />
+            <Routes>
+            <Route path="/" element={<UserList />} ></Route>
+            </Routes>
           </Container>
         </Router>
       </ProvideAppContext>

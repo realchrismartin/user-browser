@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
 import UserBrowserUser, { getUserBrowserUser } from "./UserBrowserUser";
 import { getUsers, getData } from "./GraphService";
 import { useAppContext } from "./AppContext";
@@ -9,7 +8,7 @@ import {
   AuthenticatedTemplate,
 } from "@azure/msal-react";
 
-export default function UserList(props: RouteComponentProps) {
+export default function UserList() {
   const app = useAppContext();
 
   const [users, setUsers] = useState<UserBrowserUser[]>();

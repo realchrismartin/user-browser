@@ -1,6 +1,6 @@
 const express = require("express");
 const sql = require("mssql");
-const config = require("../config/config.js")
+const config = require("../config/config").default
 
 const router = express.Router();
 
