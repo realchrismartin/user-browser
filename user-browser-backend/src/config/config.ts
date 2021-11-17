@@ -25,6 +25,7 @@ const config = {
     password: process.env.NODE_APP_SUB_SQL_PASSWORD,
     database: process.env.NODE_APP_SUB_SQL_DATABASE,
     server: process.env.NODE_APP_SUB_SQL_HOSTNAME,
+    usersQuery: "select * from dbo.users",
     pool: {
       max: 10,
       min: 0,

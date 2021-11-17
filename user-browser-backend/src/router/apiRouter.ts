@@ -1,18 +1,14 @@
 import { Request, Response } from "express";
-const express = require("express");
-const sql = require("mssql");
-const config = require("../config/config").default
+import { User } from "../types/User";
+import { getUsers } from "../util/dbUtils";
 
+const express = require("express");
 const router = express.Router();
 
 router.get("/data", (req : Request ,res : Response) => { 
-    sql.connect(config.sqlConfig).then((connectionPool : any ) => {
-        connectionPool.query("select * from users").then((dbResult : any) => {
-            res.send(dbResult.recordset);
-        })
-    }).catch((err : Error) => {
-        console.log(err);
-    });
+    getUsers().then((users : User[]) => {
+        res.send(users)
+    })
 });
 
 module.exports = router;

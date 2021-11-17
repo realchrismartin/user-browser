@@ -13,6 +13,7 @@
     "@microsoft/microsoft-graph-types-beta": "^0.17.0-preview",
     "@types/express": "^4.17.13",
     "@types/microsoft-graph": "^2.9.0",
+    "@types/mssql": "^7.1.4",
     "@types/node": "^16.11.7",
     "cors": "^2.8.5",
     "express": "^4.17.1",

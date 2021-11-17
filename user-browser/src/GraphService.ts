@@ -4,7 +4,7 @@ import {
   PageIterator,
 } from "@microsoft/microsoft-graph-client";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
-import { User } from "microsoft-graph";
+import { Group, User } from "microsoft-graph";
 import { DatabaseUser, getDatabaseUsersFromJson } from "./UserBrowserUser";
 
 let graphClient: Client | undefined = undefined;
@@ -57,7 +57,7 @@ export async function getAPIUsers(
 
   let response: PageCollection = await graphClient!
     .api("/users")
-    .select("displayName,mail")
+    .select("id,mail")
     .top(25)
     .get();
 
@@ -73,6 +73,36 @@ export async function getAPIUsers(
     await pageIterator.iterate();
 
     return users;
+  } else {
+    return response.value;
+  }
+}
+
+export async function getUserGroups(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  userId : string,
+): Promise<Group[]> {
+
+  ensureClient(authProvider);
+
+  let response: PageCollection = await graphClient!
+    .api("/users/" + userId + "/memberOf")
+    .select("id,displayName,mail")
+    .top(25)
+    .get();
+
+  if (response["@odata.nextLink"]) {
+
+    let groups : Group[] = [];
+
+    let pageIterator = new PageIterator(graphClient!, response, (group) => {
+      groups.push(group);
+      return true;
+    });
+
+    await pageIterator.iterate();
+
+    return groups;
   } else {
     return response.value;
   }
