@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
-import ProvideAppContext from "./AppContext";
+import ProvideAppContext from "./auth/AppContext";
 import ErrorMessage from "./ErrorMessage";
-import NavBar from "./NavBar";
-import UserList from "./UserList";
+import NavBar from "./components/NavBar";
+import UserList from "./components/UserList";
 
 export default function App() {
   return (

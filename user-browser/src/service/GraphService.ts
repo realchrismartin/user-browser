@@ -5,7 +5,6 @@ import {
 } from "@microsoft/microsoft-graph-client";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { Group, User } from "microsoft-graph";
-import { DatabaseUser, getDatabaseUsersFromJson } from "./UserBrowserUser";
 
 let graphClient: Client | undefined = undefined;
 
@@ -33,23 +32,7 @@ export async function getUser(
   return user;
 }
 
-export async function getDatabaseUsers(token : string): Promise<DatabaseUser[]> {
-
-  const pop = `Bearer ${token}`;
-
-  let res = await fetch("http://localhost:8080/api/data", {
-    method: "GET",
-    mode: "cors",
-    cache: "no-cache",
-    headers: {
-      "Authorization":pop
-    }})
-
-  let json = await res.json()
-  return getDatabaseUsersFromJson(json);
-}
-
-export async function getAPIUsers(
+export async function getUsers(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
 ): Promise<User[]> {
 
@@ -58,7 +41,7 @@ export async function getAPIUsers(
   let response: PageCollection = await graphClient!
     .api("/users")
     .select("id,mail")
-    .top(25)
+    .top(50)
     .get();
 
   if (response["@odata.nextLink"]) {
@@ -88,7 +71,7 @@ export async function getUserGroups(
   let response: PageCollection = await graphClient!
     .api("/users/" + userId + "/memberOf")
     .select("id,displayName,mail")
-    .top(25)
+    .top(50)
     .get();
 
   if (response["@odata.nextLink"]) {

@@ -1,5 +1,5 @@
 import { User, Group } from "microsoft-graph";
-import { getUserGroups } from "./GraphService";
+import { getUserGroups } from "../service/GraphService";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 
 export type UserBrowserUser = {

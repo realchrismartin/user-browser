@@ -16,3 +16,7 @@ body {
 .app-title {
   padding-left: 10px;
 }
+
+.sub-alert {
+  margin-top:20vh;
+}

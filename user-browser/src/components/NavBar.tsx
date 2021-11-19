@@ -7,11 +7,11 @@ import {
   NavItem
 } from 'react-bootstrap';
 
-import logo from "./img/logo.png"
+import logo from "../img/logo.png"
 
 import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react';
 
-import { useAppContext } from './AppContext';
+import { useAppContext } from '../auth/AppContext';
 
 export default function NavBar() {
   const app = useAppContext();

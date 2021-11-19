@@ -1,6 +1,6 @@
 //MsalBootstrap: sets up implicitly authenticated instance of PublicClientApplication
 
-import { msalConfig } from "./AuthConfig"
+import { msalConfig } from "../config/Config"
 import { PublicClientApplication } from "@azure/msal-browser"
 
 import {

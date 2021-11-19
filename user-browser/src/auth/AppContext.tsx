@@ -6,13 +6,13 @@ import React, {
   useEffect,
 } from "react";
 
-import AppUser from "./types/AppUser"
-import AppError from "./types/AppError"
-import { getUser } from './GraphService';
+import AppUser from "../types/AppUser"
+import AppError from "../types/AppError"
+import { getUser } from '../service/GraphService';
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import { loginConfig, graphConfig } from "./AuthConfig"
+import { loginConfig, graphConfig, apiConfig } from "../config/Config"
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 
 //Update AppContext type to add more global functions/properties
@@ -102,7 +102,7 @@ function useProvideAppContext() {
     }
 
     const tokenRequest = {
-        scopes: ["api://12ce6802-72f3-486a-a133-62bb577021bc/Test"],
+        scopes: apiConfig.scopes,
         account:account
     }
 
