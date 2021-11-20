@@ -32,7 +32,7 @@ export async function getUser(
   return user;
 }
 
-export async function getUsers(
+export async function getUsers(pageSize : number,
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
 ): Promise<User[]> {
 
@@ -40,25 +40,28 @@ export async function getUsers(
 
   let response: PageCollection = await graphClient!
     .api("/users")
+    .query("$count=true")
+    .header("consistencylevel", "eventual")
     .select("id,mail")
-    .top(50)
+    .top(pageSize)
+    .get();
+//,response["@odata.nextLink"]}
+    return response.value;
+}
+
+export async function getUserCount(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider
+): Promise<number> {
+
+  ensureClient(authProvider);
+
+  let response: PageCollection = await graphClient!
+    .api("/users")
+    .query("$count=true")
+    .header("consistencylevel", "eventual")
     .get();
 
-  if (response["@odata.nextLink"]) {
-
-    let users: User[] = [];
-
-    let pageIterator = new PageIterator(graphClient!, response, (user) => {
-      users.push(user);
-      return true;
-    });
-
-    await pageIterator.iterate();
-
-    return users;
-  } else {
-    return response.value;
-  }
+    return response["@odata.count"]
 }
 
 export async function getUserGroups(

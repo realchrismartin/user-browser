@@ -21,7 +21,7 @@ type AppContext = {
   error?: AppError;
   signIn?: MouseEventHandler<HTMLElement>;
   signOut?: MouseEventHandler<HTMLElement>;
-  getToken?: Function;
+  apiToken?: String,
   displayError?: Function;
   clearError?: Function;
   authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
@@ -33,10 +33,10 @@ type ProvideAppContextProps = {
 
 const appContext = createContext<AppContext>({
   user: undefined,
+  apiToken: undefined,
   error: undefined,
   signIn: undefined,
   signOut: undefined,
-  getToken: undefined,
   displayError: undefined,
   clearError: undefined,
   authProvider: undefined,
@@ -58,6 +58,8 @@ function useProvideAppContext() {
   const msal = useMsal();
   const [user, setUser] = useState<AppUser | undefined>(undefined);
   const [error, setError] = useState<AppError | undefined>(undefined);
+  const [apiToken, setAPIAuthToken] = useState<String | undefined>(undefined);
+  
 
   const displayError = (message: string, debug?: string) => {
     setError({ message, debug });
@@ -94,7 +96,7 @@ function useProvideAppContext() {
     setUser(undefined);
   };
 
-  const getToken = async(method : any) => {
+  const getToken = async() => {
     const account = msal.instance.getActiveAccount();
 
     if (!account) {
@@ -142,15 +144,25 @@ function useProvideAppContext() {
         }
       }
     };
+
+    const getAPIToken = async() => {
+      if(!apiToken) {
+        let token = await getToken!();
+        setAPIAuthToken(token);
+      }
+    }
+
     checkUser();
+    getAPIToken();
+
   });
 
   return {
     user,
     error,
+    apiToken,
     signIn,
     signOut,
-    getToken,
     displayError,
     clearError,
     authProvider,
