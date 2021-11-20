@@ -7,6 +7,7 @@ import {
   UnauthenticatedTemplate,
   AuthenticatedTemplate,
 } from "@azure/msal-react";
+import UserPage from "./UserPage";
 
 export default function UserList() {
   const filterFormRef = useRef<HTMLInputElement>(null);
@@ -14,8 +15,6 @@ export default function UserList() {
   const pageSize = 10;
   const pagesPerScreen = 5;
 
-  //const [users, setUsers] = useState<UserBrowserUser[]>();
-  //const [shownUsers, setShownUsers] = useState<UserBrowserUser[]>();
   const [userCount, setUserCount] = useState<number>();
   const [activePage, setActivePage] = useState<number>();
 
@@ -39,27 +38,29 @@ export default function UserList() {
 
   let userPages = [];
   let numPages = (userCount ? userCount : pageSize) / pageSize;
-  let startPage = activePage === undefined ? 1 : activePage;
-  let screenStart = Math.floor(startPage - pagesPerScreen) + 1;
-  screenStart =  screenStart > 1 ? screenStart : 1;
+  let currPage = activePage === undefined ? 1 : activePage;
+  let screenStart = Math.floor(currPage - pagesPerScreen) + 1;
+  screenStart = screenStart > 1 ? screenStart : 1;
 
-  userPages.push(
-    <Pagination.First
-      onClick={() => {
-        setActivePage(1);
-      }}
-    />
-  );
+  if (userCount) {
+    userPages.push(
+      <Pagination.First
+        onClick={() => {
+          setActivePage(1);
+        }}
+      />
+    );
 
-  userPages.push(
+    userPages.push(
       <Pagination.Prev
         onClick={() => {
-          if(startPage > 1) {
-            setActivePage(startPage - 1);
+          if (currPage > 1) {
+            setActivePage(currPage - 1);
           }
         }}
       />
-  );
+    );
+  }
 
   let index = 0;
   for (let i = screenStart; i < numPages; i++) {
@@ -71,7 +72,7 @@ export default function UserList() {
     userPages.push(
       <Pagination.Item
         key={i}
-        active={i === startPage}
+        active={i === currPage}
         onClick={() => {
           setActivePage(i);
         }}
@@ -81,11 +82,11 @@ export default function UserList() {
     );
   }
 
-  if (startPage !== numPages) {
+  if (currPage !== numPages && currPage + 1 < numPages) {
     userPages.push(
       <Pagination.Next
         onClick={() => {
-          setActivePage(startPage + 1);
+          setActivePage(currPage + 1);
         }}
       />
     );
@@ -93,7 +94,7 @@ export default function UserList() {
     userPages.push(
       <Pagination.Last
         onClick={() => {
-          setActivePage(numPages);
+          setActivePage(Math.floor(numPages));
         }}
       />
     );
@@ -129,7 +130,12 @@ export default function UserList() {
           </Row>
           <Row>
             <Col xl="10">
-              <Pagination size="lg">{userPages}</Pagination>
+              <Row>
+                <UserPage pageNumber={currPage} />
+              </Row>
+              <Row>
+                <Pagination size="lg">{userPages}</Pagination>
+              </Row>
             </Col>
           </Row>
         </Container>
