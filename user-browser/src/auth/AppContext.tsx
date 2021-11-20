@@ -21,7 +21,7 @@ type AppContext = {
   error?: AppError;
   signIn?: MouseEventHandler<HTMLElement>;
   signOut?: MouseEventHandler<HTMLElement>;
-  apiToken?: String,
+  apiToken?: string,
   displayError?: Function;
   clearError?: Function;
   authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
@@ -58,7 +58,7 @@ function useProvideAppContext() {
   const msal = useMsal();
   const [user, setUser] = useState<AppUser | undefined>(undefined);
   const [error, setError] = useState<AppError | undefined>(undefined);
-  const [apiToken, setAPIAuthToken] = useState<String | undefined>(undefined);
+  const [apiToken, setAPIAuthToken] = useState<string | undefined>(undefined);
   
 
   const displayError = (message: string, debug?: string) => {

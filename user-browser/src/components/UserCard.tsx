@@ -8,7 +8,7 @@ type UserCardProps = {
 
 export default function UserCard(props: UserCardProps) {
   return (
-    <div className="user-card">
+    <div className="user-card" key={"card-" + props.index}>
       <Accordion.Item eventKey={props.index.toString()}>
         <Accordion.Header>{props.user.email}</Accordion.Header>
         <Accordion.Body>
@@ -23,7 +23,7 @@ export default function UserCard(props: UserCardProps) {
                 <tbody>
                   {props.user.securityGroups
                   .filter((group) => { return group.mail?.length === undefined })
-                  .map((group, index) => {return (<tr><td>{index+1}</td><td>{group.displayName}</td></tr>)})}
+                  .map((group, index) => {return (<tr key={index}><td>{index+1}</td><td>{group.displayName}</td></tr>)})}
                 </tbody>
               </Table>
             </Tab>
@@ -34,7 +34,7 @@ export default function UserCard(props: UserCardProps) {
                 <tbody>
                   {props.user.securityGroups
                   .filter((group) => { return group?.mail?.length > 0  && group.mail !== undefined })
-                  .map((group, index) => {return (<tr><td>{index+1}</td><td>{group.mail}</td></tr>)})}
+                  .map((group, index) => {return (<tr key={index}><td>{index+1}</td><td>{group.mail}</td></tr>)})}
                 </tbody>
               </Table>
             </Tab>

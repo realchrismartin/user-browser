@@ -32,16 +32,15 @@ export async function getUser(
   return user;
 }
 
-export async function getUsers(pageSize : number,
+export async function getUsers(start : number, pageSize : number,
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
 ): Promise<User[]> {
 
   ensureClient(authProvider);
 
+  //TODO: Use start
   let response: PageCollection = await graphClient!
     .api("/users")
-    .query("$count=true")
-    .header("consistencylevel", "eventual")
     .select("id,mail")
     .top(pageSize)
     .get();

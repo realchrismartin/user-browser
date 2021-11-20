@@ -45,6 +45,7 @@ export default function UserList() {
   if (userCount) {
     userPages.push(
       <Pagination.First
+        key="first"
         onClick={() => {
           setActivePage(1);
         }}
@@ -53,6 +54,7 @@ export default function UserList() {
 
     userPages.push(
       <Pagination.Prev
+        key="prev"
         onClick={() => {
           if (currPage > 1) {
             setActivePage(currPage - 1);
@@ -85,6 +87,7 @@ export default function UserList() {
   if (currPage !== numPages && currPage + 1 < numPages) {
     userPages.push(
       <Pagination.Next
+        key="next"
         onClick={() => {
           setActivePage(currPage + 1);
         }}
@@ -93,12 +96,15 @@ export default function UserList() {
 
     userPages.push(
       <Pagination.Last
+        key="last"
         onClick={() => {
           setActivePage(Math.floor(numPages));
         }}
       />
     );
   }
+
+ let pageShown = (<UserPage pageNumber={currPage} pageSize={pageSize} userCount={userCount === undefined ? 0 : userCount}/>);
 
   return (
     <div className="content">
@@ -131,7 +137,7 @@ export default function UserList() {
           <Row>
             <Col xl="10">
               <Row>
-                <UserPage pageNumber={currPage} />
+                {pageShown}
               </Row>
               <Row>
                 <Pagination size="lg">{userPages}</Pagination>
