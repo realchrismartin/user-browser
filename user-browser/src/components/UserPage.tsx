@@ -15,32 +15,41 @@ type UserPageProps = {
 export default function UserPage(props: UserPageProps) {
   const app = useAppContext();
   const [users, setUsers] = useState<Map<number, UserBrowserUser[]>>();
+  const [updated, setUpdated] = useState<Boolean>();
+
+  async function loadPageData(pageNumber : number) {
+
+    let userMap = users;
+
+    if (!userMap) {
+      userMap = new Map<number, UserBrowserUser[]>();
+    }
+
+    let userEntry = userMap.get(pageNumber);
+
+    if (app.user && !userEntry && props.userCount > 0) {
+      let start = 0; //TODO: derive using props
+      let apiUsers = await getUsers(start, props.pageSize, app.authProvider!);
+      let dbUsers = await getDatabaseUsers(app.apiToken!); //TODO: Retrieves entire list
+      let ubUsers = await getUserBrowserUsers(
+        app.authProvider!,
+        apiUsers,
+        dbUsers
+      );
+
+      userMap.set(pageNumber, ubUsers);
+      setUsers(userMap);
+
+      //Force a state update (React doesn't consider reusing the same map to be an update)
+      let update = updated === undefined ? false : updated;
+      update = update === false;
+      setUpdated(update);
+
+    }
+  }
 
   useEffect(() => {
-    async function loadPageData() {
-      let userMap = users;
-
-      if (!userMap) {
-        userMap = new Map<number, UserBrowserUser[]>();
-      }
-
-      let userEntry = userMap.get(props.pageNumber);
-
-      if (app.user && !userEntry && props.userCount > 0) {
-        let start = 0; //TODO: derive using props
-        let apiUsers = await getUsers(start, props.pageSize, app.authProvider!);
-        let dbUsers = await getDatabaseUsers(app.apiToken!); //TODO: Retrieves entire list
-        let ubUsers = await getUserBrowserUsers(
-          app.authProvider!,
-          apiUsers,
-          dbUsers
-        );
-
-        userMap.set(props.pageNumber, ubUsers);
-        setUsers(userMap);
-      }
-    }
-    loadPageData();
+    loadPageData(props.pageNumber);
   });
 
 
