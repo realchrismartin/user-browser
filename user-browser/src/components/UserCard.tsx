@@ -7,7 +7,6 @@ type UserCardProps = {
 };
 
 export default function UserCard(props: UserCardProps) {
-
   const userHeader = props.user.email;
 
   return (
@@ -17,27 +16,57 @@ export default function UserCard(props: UserCardProps) {
         <Accordion.Body>
           <Tabs defaultActiveKey="user" id="userDetails" className="mb-3">
             <Tab eventKey="user" title="User">
-                {props.user.email}
+              <Table striped bordered hover>
+                <thead></thead>
+                <tbody>
+                  <tr><td>Name</td><td>{props.user.displayName}</td></tr>
+                  <tr><td>Title</td><td>{props.user.title}</td></tr>
+                  <tr><td>Company</td><td>{props.user.company}</td></tr>
+                  <tr><td>Degree</td><td>{props.user.degree}</td></tr>
+                  <tr><td>Phone</td><td>{props.user.phone}</td></tr>
+                  <tr><td>Center</td><td>{props.user.center}</td></tr>
+                  <tr><td>Division</td><td>{props.user.division}</td></tr>
+                  <tr><td>NPI</td><td>{props.user.npiLocation}</td></tr>
+                </tbody>
+              </Table>
             </Tab>
             <Tab eventKey="accessGroups" title="Access Groups">
               <Table striped bordered hover>
-                <thead>
-                </thead>
+                <thead></thead>
                 <tbody>
                   {props.user.securityGroups
-                  .filter((group) => { return group.mail?.length === undefined })
-                  .map((group, index) => {return (<tr key={index}><td>{index+1}</td><td>{group.displayName}</td></tr>)})}
+                    .filter((group) => {
+                      return group.mail?.length === undefined;
+                    })
+                    .map((group, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{group.displayName}</td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </Table>
             </Tab>
             <Tab eventKey="mailGroups" title="Mail Groups">
               <Table striped bordered hover>
-                <thead>
-                </thead>
+                <thead></thead>
                 <tbody>
                   {props.user.securityGroups
-                  .filter((group) => { return group?.mail?.length > 0  && group.mail !== undefined })
-                  .map((group, index) => {return (<tr key={index}><td>{index+1}</td><td>{group.mail}</td></tr>)})}
+                    .filter((group) => {
+                      return (
+                        group?.mail?.length > 0 && group.mail !== undefined
+                      );
+                    })
+                    .map((group, index) => {
+                      return (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{group.mail}</td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </Table>
             </Tab>
