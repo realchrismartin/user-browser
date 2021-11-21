@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../auth/AppContext";
-import {Form, Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 
 import {
   UnauthenticatedTemplate,
@@ -8,9 +8,9 @@ import {
 } from "@azure/msal-react";
 import UserPage from "./UserPage";
 import PageList from "./PageList";
+import FilterForm from "./FilterForm";
 
 export default function UserList() {
-  const filterFormRef = useRef<HTMLInputElement>(null);
   const app = useAppContext();
   const pageSize = 5;
   const pagesPerScreen = 10;
@@ -27,9 +27,9 @@ export default function UserList() {
     setInitialPage();
   });
 
-  async function applyFilter() {
+  async function applyFilter(filter: string) {
     await setActivePage(0);
-    app.filterUsers!(filterFormRef.current ? filterFormRef.current.value : "");
+    app.filterUsers!(filter);
     setActivePage(1);
   }
 
@@ -41,37 +41,18 @@ export default function UserList() {
       <UnauthenticatedTemplate>You are not logged in.</UnauthenticatedTemplate>
       <AuthenticatedTemplate>
         <Container>
-          <Row className="justify-content-md-left">
-            <Col md="auto">
-              <Form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  applyFilter();
-                }}
-              >
-                <Form.Group className="mb-3" controlId="filterForm">
-                  <Form.Label>Filter</Form.Label>
-                  <Form.Control
-                    type="filter"
-                    placeholder="Enter search criteria"
-                    ref={filterFormRef}
-                  />
-                </Form.Group>
-                <Button
-                  variant="primary"
-                  type="button"
-                  onClick={(e) => {
-                    applyFilter();
-                  }}
-                >
-                  Search
-                </Button>
-              </Form>
-            </Col>
+          <Row>
+            <FilterForm
+              applyFilter={applyFilter}
+              formLabel={"Search Users"}
+              formPlaceholderText={"Enter a search term"}
+            />
           </Row>
           <Row className="page-container">
             <Col xl="10">
-              <Row><UserPage pageNumber={currPage} pageSize={pageSize} /></Row>
+              <Row>
+                <UserPage pageNumber={currPage} pageSize={pageSize} />
+              </Row>
               <Row>
                 <PageList
                   setActivePage={setActivePage}
