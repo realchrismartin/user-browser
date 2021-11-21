@@ -19,7 +19,7 @@ export default function GroupPage(props: GroupPageProps) {
     if (app.user && app.shownGroups && (pageShown !== pageNumber)) {
       let start = (pageNumber - 1) * props.pageSize;
       let apiGroups = app.shownGroups.slice(start,start + props.pageSize);
-      let ubGroups = await getUserBrowserGroups(apiGroups);
+      let ubGroups = await getUserBrowserGroups(app.authProvider!,apiGroups);
       setPageGroups(ubGroups);
       setPageShown(pageNumber);
     }

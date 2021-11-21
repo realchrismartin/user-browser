@@ -7,6 +7,7 @@ type GroupCardProps = {
 };
 
 export default function GroupCard(props: GroupCardProps) {
+
   return (
     <div className="user-card" key={"card-" + props.index}>
       <Accordion.Item eventKey={props.index.toString()}>
@@ -16,8 +17,14 @@ export default function GroupCard(props: GroupCardProps) {
             <Tab eventKey="groupMembers" title="Members">
               <Table striped bordered hover>
                 <thead>
+                  <td>Name</td><td>E-mail</td>
                 </thead>
                 <tbody>
+                  {props.group.members.map((user) => {
+                    return(
+                      <tr><td>{user.displayName}</td><td>{user.mail}</td></tr>
+                    )
+                  })}
                 </tbody>
               </Table>
             </Tab>
