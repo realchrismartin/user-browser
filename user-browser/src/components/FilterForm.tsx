@@ -17,20 +17,21 @@ export default function FilterForm(props: FilterFormProps) {
           <Row>
             <Col>
               <Form.Group className="mb-3" controlId="filterForm">
-                <Form.Control
-                  type="filter"
-                  placeholder={props.formPlaceholderText}
-                  ref={filterFormRef}
-                />
+                <Form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    props.applyFilter(
+                      filterFormRef.current ? filterFormRef.current.value : ""
+                    );
+                  }}
+                >
+                  <Form.Control
+                    type="filter"
+                    placeholder={props.formPlaceholderText}
+                    ref={filterFormRef}
+                  />
+                </Form>
               </Form.Group>
-              <Form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  props.applyFilter(
-                    filterFormRef.current ? filterFormRef.current.value : ""
-                  );
-                }}
-              ></Form>
             </Col>
             <Col>
               <Button

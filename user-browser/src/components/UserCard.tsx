@@ -7,10 +7,13 @@ type UserCardProps = {
 };
 
 export default function UserCard(props: UserCardProps) {
+
+  const userHeader = props.user.email;
+
   return (
     <div className="user-card" key={"card-" + props.index}>
       <Accordion.Item eventKey={props.index.toString()}>
-        <Accordion.Header>{props.user.email}</Accordion.Header>
+        <Accordion.Header>{userHeader}</Accordion.Header>
         <Accordion.Body>
           <Tabs defaultActiveKey="user" id="userDetails" className="mb-3">
             <Tab eventKey="user" title="User">

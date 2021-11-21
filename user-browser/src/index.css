@@ -24,3 +24,8 @@ body {
 .sub-alert {
   margin-top:20vh;
 }
+
+.loading-spinner {
+  padding-top:1vh;
+  padding-bottom:1vh;
+}

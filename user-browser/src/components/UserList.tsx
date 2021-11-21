@@ -38,7 +38,7 @@ export default function UserList() {
   let numPages = shownUsers.length / pageSize;
 
   return (
-    <div className="content">
+    <Container className="content">
       <UnauthenticatedTemplate>You are not logged in.</UnauthenticatedTemplate>
       <AuthenticatedTemplate>
         <Container>
@@ -46,7 +46,7 @@ export default function UserList() {
             <FilterForm
               applyFilter={applyFilter}
               formLabel={"Search Users"}
-              formPlaceholderText={"Enter a search term"}
+              formPlaceholderText={"Enter search term"}
             />
           </Row>
           <Row className="justify-content-md-center">
@@ -66,6 +66,6 @@ export default function UserList() {
           </Row>
         </Container>
       </AuthenticatedTemplate>
-    </div>
+    </Container>
   );
 }

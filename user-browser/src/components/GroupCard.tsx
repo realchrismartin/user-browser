@@ -1,4 +1,4 @@
-import { Accordion, Tabs, Tab, Table } from "react-bootstrap";
+import { Accordion, Tabs, Tab, Table, Container } from "react-bootstrap";
 import { UserBrowserGroup } from "../types/UserBrowserGroup";
 
 type GroupCardProps = {
@@ -8,7 +8,7 @@ type GroupCardProps = {
 
 export default function GroupCard(props: GroupCardProps) {
   return (
-    <div className="user-card" key={"card-" + props.index}>
+    <Container className="group-card" key={"group-card-" + props.index}>
       <Accordion.Item eventKey={props.index.toString()}>
         <Accordion.Header>
           {props.group.mail !== "" ? props.group.mail : props.group.displayName}
@@ -28,9 +28,9 @@ export default function GroupCard(props: GroupCardProps) {
                   </tr>
                 </thead>
                 <tbody>
-                  {props.group.members.map((user) => {
+                  {props.group.members.map((user,index) => {
                     return (
-                      <tr>
+                      <tr key={"user-row-" + index}>
                         <td>{user.displayName}</td>
                         <td>{user.mail}</td>
                       </tr>
@@ -42,6 +42,6 @@ export default function GroupCard(props: GroupCardProps) {
           </Tabs>
         </Accordion.Body>
       </Accordion.Item>
-    </div>
+    </Container>
   );
 }

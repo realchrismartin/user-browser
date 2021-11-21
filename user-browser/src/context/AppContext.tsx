@@ -121,7 +121,7 @@ function useProvideAppContext() {
   //Filter function for groups
   const filterGroups = async (filter: string) => {
     let filteredGroups = groups?.filter((group) => {
-      return group.mail?.includes(filter);
+      return group.mail?.includes(filter) || group.displayName?.includes(filter);
     });
 
     if (filter.length > 0) {

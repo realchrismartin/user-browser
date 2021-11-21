@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Tab, Tabs } from "react-bootstrap";
 
 import {
   UnauthenticatedTemplate,
@@ -16,7 +16,8 @@ export default function GroupList() {
   const pagesPerScreen = 5;
 
   const [activePage, setActivePage] = useState<number>();
-  const [groupType, setGroupType] = useState<number>();
+  const [tabToggled, setTabToggled] =
+    useState<string>();
 
   useEffect(() => {
     async function setInitialPage() {
@@ -25,14 +26,14 @@ export default function GroupList() {
       }
     }
 
-    async function setInitialGroupType() {
-      if(!groupType) {
-        setGroupType(0);
+    async function setDefaultTab() {
+      if (!tabToggled) {
+        setTabToggled("mailGroups");
       }
     }
 
     setInitialPage();
-    setInitialGroupType();
+    setDefaultTab();
   });
 
   async function applyFilter(filter: string) {
@@ -41,12 +42,30 @@ export default function GroupList() {
     setActivePage(1);
   }
 
-  let shownGroups = app.shownGroups ? app.shownGroups : []; //TODO: Filter by type
+  async function changeTab(tab : string) {
+    console.log(tab);
+    if (tabToggled !== tab) {
+      await setActivePage(0);
+      setTabToggled(tab);
+      setActivePage(1);
+    }
+  }
+
+  let shownGroups = app.shownGroups ? app.shownGroups.filter((group) => {
+    if (
+      tabToggled === "securityGroups"
+    ) {
+      return group.mail === null; 
+    }
+
+    return group.mail !== "";
+  }) : [];
+
   let currPage = activePage === undefined ? 1 : activePage;
   let numPages = shownGroups.length / pageSize;
 
   return (
-    <div className="content">
+    <Container className="content">
       <UnauthenticatedTemplate>You are not logged in.</UnauthenticatedTemplate>
       <AuthenticatedTemplate>
         <Container>
@@ -54,13 +73,29 @@ export default function GroupList() {
             <FilterForm
               applyFilter={applyFilter}
               formLabel={"Search Groups"}
-              formPlaceholderText={"Enter a search term"}
+              formPlaceholderText={"Enter search term"}
             />
           </Row>
+          <Tabs
+            defaultActiveKey="mailGroups"
+            id="mailGroupsList"
+            className="mb-3"
+            onSelect={(tab) => {
+              changeTab(tab ? tab : "mailGroups");
+              applyFilter("");
+            }}
+          >
+            <Tab eventKey="mailGroups" title="Mail Groups"></Tab>
+            <Tab eventKey="securityGroups" title="Security Groups"></Tab>
+          </Tabs>
           <Row className="justify-content-md-center">
             <Col xl="10">
               <Row>
-                <GroupPage shownGroups={shownGroups} pageNumber={currPage} pageSize={pageSize} />
+                <GroupPage
+                  shownGroups={shownGroups}
+                  pageNumber={currPage}
+                  pageSize={pageSize}
+                />
               </Row>
               <Row className="justify-content-md-center">
                 <PageList
@@ -74,6 +109,6 @@ export default function GroupList() {
           </Row>
         </Container>
       </AuthenticatedTemplate>
-    </div>
+    </Container>
   );
 }
