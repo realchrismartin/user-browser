@@ -83,7 +83,7 @@ export async function getGroups(pageSize : number,
 
   let response: PageCollection = await graphClient!
     .api("/groups")
-    .select("id,mail") //TODO: specify search criteria:?
+    .select("id,displayName,mail") 
     .top(pageSize)
     .get();
 
