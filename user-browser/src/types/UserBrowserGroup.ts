@@ -5,6 +5,8 @@ export type UserBrowserGroup = {
   mail: string;
 };
 
+
+//TODO: add group members
 export async function getUserBrowserGroups(
   apiGroups: Group[]
 ): Promise<UserBrowserGroup[]> {
