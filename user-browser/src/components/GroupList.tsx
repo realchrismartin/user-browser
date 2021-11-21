@@ -16,6 +16,7 @@ export default function GroupList() {
   const pagesPerScreen = 5;
 
   const [activePage, setActivePage] = useState<number>();
+  const [groupType, setGroupType] = useState<number>();
 
   useEffect(() => {
     async function setInitialPage() {
@@ -24,7 +25,14 @@ export default function GroupList() {
       }
     }
 
+    async function setInitialGroupType() {
+      if(!groupType) {
+        setGroupType(0);
+      }
+    }
+
     setInitialPage();
+    setInitialGroupType();
   });
 
   async function applyFilter(filter: string) {
@@ -33,8 +41,9 @@ export default function GroupList() {
     setActivePage(1);
   }
 
+  let shownGroups = app.shownGroups ? app.shownGroups : []; //TODO: Filter by type
   let currPage = activePage === undefined ? 1 : activePage;
-  let numPages = (app.shownGroups ? app.shownGroups.length : pageSize) / pageSize;
+  let numPages = shownGroups.length / pageSize;
 
   return (
     <div className="content">
@@ -51,7 +60,7 @@ export default function GroupList() {
           <Row className="justify-content-md-center">
             <Col xl="10">
               <Row>
-                <GroupPage pageNumber={currPage} pageSize={pageSize} />
+                <GroupPage shownGroups={shownGroups} pageNumber={currPage} pageSize={pageSize} />
               </Row>
               <Row className="justify-content-md-center">
                 <PageList

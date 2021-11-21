@@ -1,3 +1,4 @@
+import { Group } from "microsoft-graph";
 import { useEffect, useState } from "react";
 import { Accordion, Spinner } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
@@ -5,6 +6,7 @@ import { getUserBrowserGroups, UserBrowserGroup } from "../types/UserBrowserGrou
 import GroupCard from "./GroupCard";
 
 type GroupPageProps = {
+  shownGroups: Group[];
   pageNumber: number;
   pageSize: number;
 };
@@ -16,9 +18,9 @@ export default function GroupPage(props: GroupPageProps) {
 
   async function loadPageData(pageNumber : number) {
 
-    if (app.user && app.shownGroups && (pageShown !== pageNumber)) {
+    if (app.user && props.shownGroups.length > 0 && (pageShown !== pageNumber)) {
       let start = (pageNumber - 1) * props.pageSize;
-      let apiGroups = app.shownGroups.slice(start,start + props.pageSize);
+      let apiGroups = props.shownGroups.slice(start,start + props.pageSize);
       let ubGroups = await getUserBrowserGroups(app.authProvider!,apiGroups);
       setPageGroups(ubGroups);
       setPageShown(pageNumber);

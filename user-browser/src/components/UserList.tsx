@@ -33,8 +33,9 @@ export default function UserList() {
     setActivePage(1);
   }
 
+  let shownUsers = app.shownUsers ? app.shownUsers : [];
   let currPage = activePage === undefined ? 1 : activePage;
-  let numPages = (app.shownUsers ? app.shownUsers.length : pageSize) / pageSize;
+  let numPages = shownUsers.length / pageSize;
 
   return (
     <div className="content">
@@ -51,7 +52,7 @@ export default function UserList() {
           <Row className="justify-content-md-center">
             <Col xl="10">
               <Row>
-                <UserPage pageNumber={currPage} pageSize={pageSize} />
+                <UserPage shownUsers={shownUsers} pageNumber={currPage} pageSize={pageSize} />
               </Row>
               <Row className="justify-content-md-center">
                 <PageList

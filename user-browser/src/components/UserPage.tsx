@@ -4,8 +4,10 @@ import { Accordion, Spinner } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
 import { getDatabaseUsers } from "../service/APIService";
 import UserCard from "./UserCard";
+import { User } from "microsoft-graph";
 
 type UserPageProps = {
+  shownUsers: User[];
   pageNumber: number;
   pageSize: number;
 };
@@ -17,9 +19,9 @@ export default function UserPage(props: UserPageProps) {
 
   async function loadPageData(pageNumber : number) {
 
-    if (app.user && app.shownUsers && (pageShown !== pageNumber)) {
+    if (app.user && props.shownUsers.length > 0 && (pageShown !== pageNumber)) {
       let start = (pageNumber - 1) * props.pageSize;
-      let apiUsers = app.shownUsers.slice(start,start + props.pageSize);
+      let apiUsers = props.shownUsers.slice(start,start + props.pageSize);
       let dbUsers = await getDatabaseUsers(app.apiToken!); //TODO: Retrieves entire list
       let ubUsers = await getUserBrowserUsers(
         app.authProvider!,
