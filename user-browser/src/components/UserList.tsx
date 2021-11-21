@@ -12,7 +12,7 @@ import FilterForm from "./FilterForm";
 
 export default function UserList() {
   const app = useAppContext();
-  const pageSize = 5;
+  const pageSize = 10;
   const pagesPerScreen = 10;
 
   const [activePage, setActivePage] = useState<number>();

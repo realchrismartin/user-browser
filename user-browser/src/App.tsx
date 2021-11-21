@@ -5,6 +5,7 @@ import ProvideAppContext from "./auth/AppContext";
 import ErrorMessage from "./ErrorMessage";
 import NavBar from "./components/NavBar";
 import UserList from "./components/UserList";
+import GroupList from "./components/GroupList";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
             <ErrorMessage />
             <Routes>
             <Route path="/" element={<UserList />} ></Route>
+            <Route path="/groups" element={<GroupList />} ></Route>
             </Routes>
           </Container>
         </Router>
