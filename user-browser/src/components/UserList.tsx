@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAppContext } from "../auth/AppContext";
+import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col } from "react-bootstrap";
 
 import {
@@ -13,7 +13,7 @@ import FilterForm from "./FilterForm";
 export default function UserList() {
   const app = useAppContext();
   const pageSize = 10;
-  const pagesPerScreen = 10;
+  const pagesPerScreen = 5;
 
   const [activePage, setActivePage] = useState<number>();
 
@@ -48,12 +48,12 @@ export default function UserList() {
               formPlaceholderText={"Enter a search term"}
             />
           </Row>
-          <Row className="page-container">
+          <Row className="justify-content-md-center">
             <Col xl="10">
               <Row>
                 <UserPage pageNumber={currPage} pageSize={pageSize} />
               </Row>
-              <Row>
+              <Row className="justify-content-md-center">
                 <PageList
                   setActivePage={setActivePage}
                   pagesPerScreen={pagesPerScreen}

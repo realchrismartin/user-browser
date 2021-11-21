@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getUserBrowserUsers, UserBrowserUser } from "../types/UserBrowserUser";
 import { Accordion, Spinner } from "react-bootstrap";
-import { useAppContext } from "../auth/AppContext";
+import { useAppContext } from "../context/AppContext";
 import { getDatabaseUsers } from "../service/APIService";
 import UserCard from "./UserCard";
 

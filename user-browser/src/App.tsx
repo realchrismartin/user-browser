@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
-import ProvideAppContext from "./auth/AppContext";
+import ProvideAppContext from "./context/AppContext";
 import ErrorMessage from "./ErrorMessage";
 import NavBar from "./components/NavBar";
 import UserList from "./components/UserList";

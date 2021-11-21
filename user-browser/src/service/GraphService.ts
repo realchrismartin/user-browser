@@ -5,6 +5,7 @@ import {
 } from "@microsoft/microsoft-graph-client";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { Group, User } from "microsoft-graph";
+import { GroupMember } from "../types/GroupMember";
 
 let graphClient: Client | undefined = undefined;
 
@@ -138,6 +139,35 @@ export async function getUserGroups(
     await pageIterator.iterate();
 
     return groups;
+  } else {
+    return response.value;
+  }
+}
+
+export async function getGroupMembers(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  groupId : string,
+): Promise<GroupMember[]> {
+
+  ensureClient(authProvider);
+
+  let response: PageCollection = await graphClient!
+    .api("/groups/" + groupId + "/members")
+    .top(50)
+    .get();
+
+  if (response["@odata.nextLink"]) {
+
+    let groupMembers : GroupMember[] = [];
+
+    let pageIterator = new PageIterator(graphClient!, response, (groupMember) => {
+      groupMembers.push(groupMember);
+      return true;
+    });
+
+    await pageIterator.iterate();
+
+    return groupMembers;
   } else {
     return response.value;
   }

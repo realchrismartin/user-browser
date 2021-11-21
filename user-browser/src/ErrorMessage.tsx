@@ -1,5 +1,5 @@
 import { Alert } from 'react-bootstrap';
-import { useAppContext } from './auth/AppContext';
+import { useAppContext } from './context/AppContext';
 
 export default function ErrorMessage() {
   const app = useAppContext();

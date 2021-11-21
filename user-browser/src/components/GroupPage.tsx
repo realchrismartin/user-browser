@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Accordion, Spinner } from "react-bootstrap";
-import { useAppContext } from "../auth/AppContext";
+import { useAppContext } from "../context/AppContext";
 import { getUserBrowserGroups, UserBrowserGroup } from "../types/UserBrowserGroup";
 import GroupCard from "./GroupCard";
 

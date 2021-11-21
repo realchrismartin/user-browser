@@ -14,7 +14,7 @@ import {
   UnauthenticatedTemplate,
 } from "@azure/msal-react";
 
-import { useAppContext } from "../auth/AppContext";
+import { useAppContext } from "../context/AppContext";
 
 export default function NavBar() {
   const app = useAppContext();
