@@ -25,9 +25,10 @@ export default function NavBar() {
       <Container>
         <img className="logo" src={logo} alt="Sentinel User Browser" />
         <Navbar.Brand className="app-title" href="/">
-          Sentinel User Browser Demo
+         User Browser Demo
         </Navbar.Brand>
         <Navbar.Toggle />
+        <Navbar.Collapse>
         <Nav variant="pills" className="me-auto" navbar>
           <AuthenticatedTemplate>
             <NavItem>
@@ -38,8 +39,6 @@ export default function NavBar() {
             </NavItem>
           </AuthenticatedTemplate>
         </Nav>
-
-        <Navbar.Collapse>
           <Nav className="me-auto" navbar></Nav>
           <Nav className="ms-auto align-items-center" navbar>
             <AuthenticatedTemplate>

@@ -6,34 +6,37 @@ import React, {
   useEffect,
 } from "react";
 
-import AppUser from "../types/AppUser"
-import AppError from "../types/AppError"
-import { getUser, getUsers } from '../service/GraphService';
+import AppUser from "../types/AppUser";
+import AppError from "../types/AppError";
+import { getGroups, getUser, getUsers } from "../service/GraphService";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
-import { loginConfig, graphConfig, apiConfig } from "../config/Config"
-import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import { User } from "microsoft-graph";
+import { loginConfig, graphConfig, apiConfig } from "../config/Config";
+import { InteractionRequiredAuthError } from "@azure/msal-browser";
+import { Group, User } from "microsoft-graph";
 
 //Update AppContext type to add more global functions/properties
 type AppContext = {
   user?: AppUser;
   users?: User[];
   shownUsers?: User[];
+  groups?: Group[];
+  shownGroups?: Group[];
   error?: AppError;
   signIn?: MouseEventHandler<HTMLElement>;
   signOut?: MouseEventHandler<HTMLElement>;
-  apiToken?: string,
+  apiToken?: string;
   displayError?: Function;
   clearError?: Function;
   filterUsers?: Function;
+  filterGroups?: Function;
   authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
 };
 
 type ProvideAppContextProps = {
   children: React.ReactNode;
-}
+};
 
 const appContext = createContext<AppContext>({
   user: undefined,
@@ -46,6 +49,7 @@ const appContext = createContext<AppContext>({
   displayError: undefined,
   clearError: undefined,
   filterUsers: undefined,
+  filterGroups: undefined,
   authProvider: undefined,
 });
 
@@ -69,6 +73,8 @@ function useProvideAppContext() {
   const [apiToken, setAPIAuthToken] = useState<string | undefined>(undefined);
   const [users, setUsers] = useState<User[] | undefined>(undefined);
   const [shownUsers, setShownUsers] = useState<User[] | undefined>(undefined);
+  const [groups, setGroups] = useState<Group[] | undefined>(undefined);
+  const [shownGroups, setShownGroups] = useState<Group[] | undefined>(undefined);
 
   const displayError = (message: string, debug?: string) => {
     setError({ message, debug });
@@ -90,77 +96,87 @@ function useProvideAppContext() {
   //Signin function
   const signIn = async () => {
     await msal.instance.loginRedirect(loginConfig);
-  
+
     const user = await getUser(authProvider);
 
     setUser({
-      displayName: user.displayName || '',
-      email: user.mail || user.userPrincipalName || ''
+      displayName: user.displayName || "",
+      email: user.mail || user.userPrincipalName || "",
     });
   };
 
-  //Filter function
-  const filterUsers = async(filter : string) => {
+  //Filter function for users
+  const filterUsers = async (filter: string) => {
+    let filteredUsers = users?.filter((user) => {
+      return user.mail?.startsWith(filter);
+    }); //TODO
 
-    let filteredUsers = users?.filter((user) => {return user.mail?.startsWith(filter)}) //TODO
-
-    console.log("filtered using " + filter);
-    console.log(filteredUsers?.length)
-
-    if(filter.length > 0) {
+    if (filter.length > 0) {
       setShownUsers(filteredUsers);
     } else {
       setShownUsers(users);
     }
-  }
-  
+  };
+
+  //Filter function for groups
+  const filterGroups = async (filter: string) => {
+    let filteredGroups = groups?.filter((group) => {
+      return true;
+    }); //TODO
+
+    if (filter.length > 0) {
+      setShownGroups(filteredGroups);
+    } else {
+      setShownGroups(groups);
+    }
+  };
+
   //Signout function
   const signOut = async () => {
-    await msal.instance.logoutRedirect()
+    await msal.instance.logoutRedirect();
     setUser(undefined);
   };
 
-  const getToken = async() => {
+  const getToken = async () => {
     const account = msal.instance.getActiveAccount();
 
     if (!account) {
-      return ""
+      return "";
     }
 
     const tokenRequest = {
-        scopes: apiConfig.scopes,
-        account:account
-    }
+      scopes: apiConfig.scopes,
+      account: account,
+    };
 
     try {
-        const response = await msal.instance.acquireTokenSilent({
-            ...tokenRequest
-        });
-    
-        return response.accessToken;
+      const response = await msal.instance.acquireTokenSilent({
+        ...tokenRequest,
+      });
+
+      return response.accessToken;
     } catch (error) {
-       console.log(error);
-        if (InteractionRequiredAuthError.isInteractionRequiredError()) {
-            const response = await msal.instance.acquireTokenPopup(tokenRequest);
-            return response.accessToken;
-        }
+      console.log(error);
+      if (InteractionRequiredAuthError.isInteractionRequiredError()) {
+        const response = await msal.instance.acquireTokenPopup(tokenRequest);
+        return response.accessToken;
+      }
     }
-  }
- 
+  };
+
   //Ensures auth is reapplied on update
   useEffect(() => {
-    const checkUser = async() => {
+    const checkUser = async () => {
       if (!user) {
         try {
-
           const account = msal.instance.getActiveAccount();
 
           if (account) {
             const user = await getUser(authProvider);
-  
+
             setUser({
-              displayName: user.displayName || '',
-              email: user.mail || user.userPrincipalName || ''
+              displayName: user.displayName || "",
+              email: user.mail || user.userPrincipalName || "",
             });
           }
         } catch (err: any) {
@@ -169,29 +185,37 @@ function useProvideAppContext() {
       }
     };
 
-    const getAPIToken = async() => {
-      if(!apiToken) {
+    const getAPIToken = async () => {
+      if (!apiToken) {
         let token = await getToken!();
         setAPIAuthToken(token);
       }
-    }
+    };
 
-    const loadUsers = async() => {
-      if(user && !users) {
-        await getUsers(100,authProvider,setUsers,setShownUsers);
+    const loadUsers = async () => {
+      if (user && !users) {
+        await getUsers(100, authProvider, setUsers, setShownUsers); //TODO
+      }
+    };
+
+    const loadGroups = async() => {
+      if (user && !groups) {
+        await getGroups(100, authProvider, setGroups, setShownGroups); //TODO
       }
     }
 
     checkUser();
     getAPIToken();
     loadUsers();
-
+    loadGroups();
   });
 
   return {
     user,
     users,
     shownUsers,
+    groups,
+    shownGroups,
     error,
     apiToken,
     signIn,
@@ -199,6 +223,7 @@ function useProvideAppContext() {
     displayError,
     clearError,
     filterUsers,
+    filterGroups,
     authProvider,
   };
 }

@@ -23,7 +23,6 @@ export default function FilterForm(props: FilterFormProps) {
             }}
           >
             <Form.Group className="mb-3" controlId="filterForm">
-              <Form.Label>Filter</Form.Label>
               <Form.Control
                 type="filter"
                 placeholder={props.formPlaceholderText}

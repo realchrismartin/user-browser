@@ -72,6 +72,47 @@ export async function getUsers(pageSize : number,
     }
 }
 
+export async function getGroups(pageSize : number,
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  setGroups: Function,
+  setShownGroups: Function
+): Promise<Group[]> {
+
+  ensureClient(authProvider);
+
+  let response: PageCollection = await graphClient!
+    .api("/groups")
+    .select("id,mail") //TODO: specify search criteria:?
+    .top(pageSize)
+    .get();
+
+    let groups : Group[] = [];
+
+    for(let group of response.value) {
+      groups.push(group);
+    }
+
+
+    setGroups(groups);
+    setShownGroups(groups);
+
+    if (response["@odata.nextLink"]) {
+  
+      let pageIterator = new PageIterator(graphClient!, response, (group) => {
+        groups.push(group);
+        setGroups(groups);
+        setShownGroups(groups);
+        return true;
+      });
+  
+      await pageIterator.iterate();
+  
+      return groups;
+    } else {
+      return response.value;
+    }
+}
+
 export async function getUserGroups(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   userId : string,
