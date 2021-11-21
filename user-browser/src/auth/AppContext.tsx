@@ -8,22 +8,26 @@ import React, {
 
 import AppUser from "../types/AppUser"
 import AppError from "../types/AppError"
-import { getUser } from '../service/GraphService';
+import { getUser, getUsers } from '../service/GraphService';
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
 import { loginConfig, graphConfig, apiConfig } from "../config/Config"
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
+import { User } from "microsoft-graph";
 
 //Update AppContext type to add more global functions/properties
 type AppContext = {
   user?: AppUser;
+  users?: User[];
+  shownUsers?: User[];
   error?: AppError;
   signIn?: MouseEventHandler<HTMLElement>;
   signOut?: MouseEventHandler<HTMLElement>;
   apiToken?: string,
   displayError?: Function;
   clearError?: Function;
+  filterUsers?: Function;
   authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
 };
 
@@ -33,12 +37,15 @@ type ProvideAppContextProps = {
 
 const appContext = createContext<AppContext>({
   user: undefined,
+  users: undefined,
+  shownUsers: undefined,
   apiToken: undefined,
   error: undefined,
   signIn: undefined,
   signOut: undefined,
   displayError: undefined,
   clearError: undefined,
+  filterUsers: undefined,
   authProvider: undefined,
 });
 
@@ -56,10 +63,12 @@ export default function ProvideAppContext({
 //AppContext function, add global functions here
 function useProvideAppContext() {
   const msal = useMsal();
+
   const [user, setUser] = useState<AppUser | undefined>(undefined);
   const [error, setError] = useState<AppError | undefined>(undefined);
   const [apiToken, setAPIAuthToken] = useState<string | undefined>(undefined);
-  
+  const [users, setUsers] = useState<User[] | undefined>(undefined);
+  const [shownUsers, setShownUsers] = useState<User[] | undefined>(undefined);
 
   const displayError = (message: string, debug?: string) => {
     setError({ message, debug });
@@ -90,6 +99,21 @@ function useProvideAppContext() {
     });
   };
 
+  //Filter function
+  const filterUsers = async(filter : string) => {
+
+    let filteredUsers = users?.filter((user) => {return user.mail?.startsWith(filter)}) //TODO
+
+    console.log("filtered using " + filter);
+    console.log(filteredUsers?.length)
+
+    if(filter.length > 0) {
+      setShownUsers(filteredUsers);
+    } else {
+      setShownUsers(users);
+    }
+  }
+  
   //Signout function
   const signOut = async () => {
     await msal.instance.logoutRedirect()
@@ -152,19 +176,29 @@ function useProvideAppContext() {
       }
     }
 
+    const loadUsers = async() => {
+      if(user && !users) {
+        await getUsers(100,authProvider,setUsers,setShownUsers);
+      }
+    }
+
     checkUser();
     getAPIToken();
+    loadUsers();
 
   });
 
   return {
     user,
+    users,
+    shownUsers,
     error,
     apiToken,
     signIn,
     signOut,
     displayError,
     clearError,
+    filterUsers,
     authProvider,
   };
 }

@@ -32,35 +32,44 @@ export async function getUser(
   return user;
 }
 
-export async function getUsers(start : number, pageSize : number,
-  authProvider: AuthCodeMSALBrowserAuthenticationProvider
+export async function getUsers(pageSize : number,
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  setUsers: Function,
+  setShownUsers: Function
 ): Promise<User[]> {
 
   ensureClient(authProvider);
 
-  //TODO: Use start
   let response: PageCollection = await graphClient!
     .api("/users")
     .select("id,mail")
     .top(pageSize)
     .get();
-//,response["@odata.nextLink"]}
-    return response.value;
-}
 
-export async function getUserCount(
-  authProvider: AuthCodeMSALBrowserAuthenticationProvider
-): Promise<number> {
+    let users: User[] = [];
 
-  ensureClient(authProvider);
+    for(let user of response.value) {
+      users.push(user);
+    }
 
-  let response: PageCollection = await graphClient!
-    .api("/users")
-    .query("$count=true")
-    .header("consistencylevel", "eventual")
-    .get();
+    setUsers(users);
+    setShownUsers(users);
 
-    return response["@odata.count"]
+    if (response["@odata.nextLink"]) {
+  
+      let pageIterator = new PageIterator(graphClient!, response, (user) => {
+        users.push(user);
+        setUsers(users);
+        setShownUsers(users);
+        return true;
+      });
+  
+      await pageIterator.iterate();
+  
+      return users;
+    } else {
+      return response.value;
+    }
 }
 
 export async function getUserGroups(

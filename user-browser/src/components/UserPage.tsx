@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { getUserBrowserUsers, UserBrowserUser } from "../types/UserBrowserUser";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Spinner } from "react-bootstrap";
 import { useAppContext } from "../auth/AppContext";
-import { getUsers } from "../service/GraphService";
 import { getDatabaseUsers } from "../service/APIService";
 import UserCard from "./UserCard";
 
 type UserPageProps = {
   pageNumber: number;
   pageSize: number;
-  userCount: number; //Overall
 };
 
 export default function UserPage(props: UserPageProps) {
@@ -27,9 +25,9 @@ export default function UserPage(props: UserPageProps) {
 
     let userEntry = userMap.get(pageNumber);
 
-    if (app.user && !userEntry && props.userCount > 0) {
-      let start = 0; //TODO: derive using props
-      let apiUsers = await getUsers(start, props.pageSize, app.authProvider!);
+    if (app.user && app.shownUsers && !userEntry) {
+      let start = (pageNumber - 1) * props.pageSize;
+      let apiUsers = app.shownUsers.slice(start,start + props.pageSize);
       let dbUsers = await getDatabaseUsers(app.apiToken!); //TODO: Retrieves entire list
       let ubUsers = await getUserBrowserUsers(
         app.authProvider!,
@@ -57,7 +55,7 @@ export default function UserPage(props: UserPageProps) {
 
   let usersToRender = userEntries === undefined ? [] : userEntries;
 
-  let loading = usersToRender.length <= 0 ? "Loading" : " "; //TODO
+  let loading = usersToRender.length <= 0 ? (<Spinner animation="border" role="status"><span className="visually-hidden">Loading...</span></Spinner>) : " "; //TODO
 
   return (
     <div className="user-page" key={"page" + props.pageNumber}>

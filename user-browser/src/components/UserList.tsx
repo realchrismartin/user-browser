@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from "react";
-import { getUserCount } from "../service/GraphService";
 import { useAppContext } from "../auth/AppContext";
 import { Pagination, Form, Container, Row, Col, Button } from "react-bootstrap";
 
@@ -15,16 +14,9 @@ export default function UserList() {
   const pageSize = 10;
   const pagesPerScreen = 5;
 
-  const [userCount, setUserCount] = useState<number>();
   const [activePage, setActivePage] = useState<number>();
 
   useEffect(() => {
-    async function loadData() {
-      if (app.user && !userCount) {
-        let count = await getUserCount(app.authProvider!);
-        setUserCount(count);
-      }
-    }
 
     async function setInitialPage() {
       if (!activePage) {
@@ -32,17 +24,16 @@ export default function UserList() {
       }
     }
 
-    loadData();
     setInitialPage();
   });
 
   let userPages = [];
-  let numPages = (userCount ? userCount : pageSize) / pageSize;
+  let numPages = (app.shownUsers ? app.shownUsers.length  : pageSize) / pageSize;
   let currPage = activePage === undefined ? 1 : activePage;
   let screenStart = Math.floor(currPage - pagesPerScreen) + 1;
   screenStart = screenStart > 1 ? screenStart : 1;
 
-  if (userCount) {
+  if (app.shownUsers) {
     userPages.push(
       <Pagination.First
         key="first"
@@ -104,7 +95,7 @@ export default function UserList() {
     );
   }
 
- let pageShown = (<UserPage pageNumber={currPage} pageSize={pageSize} userCount={userCount === undefined ? 0 : userCount}/>);
+ let pageShown = (<UserPage pageNumber={currPage} pageSize={pageSize}/>);
 
   return (
     <div className="content">
@@ -120,13 +111,15 @@ export default function UserList() {
                     type="filter"
                     placeholder="Enter search criteria"
                     ref={filterFormRef}
+
                   />
                 </Form.Group>
                 <Button
                   variant="primary"
                   type="button"
-                  onClick={(e) => {
-                    console.log("Did nothing");
+                  onClick={async (e) => {
+                   app.filterUsers!((filterFormRef.current ? filterFormRef.current.value : ""));
+                   setActivePage(1);
                   }}
                 >
                   Search
