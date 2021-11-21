@@ -13,6 +13,10 @@ body {
   padding-top:15vh;
 }
 
+.page-container {
+  padding-top:5vh;
+}
+
 .app-title {
   padding-left: 10px;
 }

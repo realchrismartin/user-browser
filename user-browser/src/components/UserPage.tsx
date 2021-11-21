@@ -4,6 +4,7 @@ import { Accordion, Spinner } from "react-bootstrap";
 import { useAppContext } from "../auth/AppContext";
 import { getDatabaseUsers } from "../service/APIService";
 import UserCard from "./UserCard";
+import { setConstantValue } from "typescript";
 
 type UserPageProps = {
   pageNumber: number;
@@ -12,20 +13,12 @@ type UserPageProps = {
 
 export default function UserPage(props: UserPageProps) {
   const app = useAppContext();
-  const [users, setUsers] = useState<Map<number, UserBrowserUser[]>>();
-  const [updated, setUpdated] = useState<Boolean>();
+  const [pageUsers,setPageUsers] = useState<UserBrowserUser[]>([]);
+  const [pageShown,setPageShown] = useState<number>(0);
 
   async function loadPageData(pageNumber : number) {
 
-    let userMap = users;
-
-    if (!userMap) {
-      userMap = new Map<number, UserBrowserUser[]>();
-    }
-
-    let userEntry = userMap.get(pageNumber);
-
-    if (app.user && app.shownUsers && !userEntry) {
+    if (app.user && app.shownUsers && (pageShown !== pageNumber)) {
       let start = (pageNumber - 1) * props.pageSize;
       let apiUsers = app.shownUsers.slice(start,start + props.pageSize);
       let dbUsers = await getDatabaseUsers(app.apiToken!); //TODO: Retrieves entire list
@@ -35,13 +28,8 @@ export default function UserPage(props: UserPageProps) {
         dbUsers
       );
 
-      userMap.set(pageNumber, ubUsers);
-      setUsers(userMap);
-
-      //Force a state update (React doesn't consider reusing the same map to be an update)
-      let update = updated === undefined ? false : updated;
-      update = update === false;
-      setUpdated(update);
+      setPageUsers(ubUsers);
+      setPageShown(pageNumber);
 
     }
   }
@@ -51,17 +39,13 @@ export default function UserPage(props: UserPageProps) {
   });
 
 
-  let userEntries = (users === undefined ? new Map<number,UserBrowserUser[]>() : users).get(props.pageNumber)
-
-  let usersToRender = userEntries === undefined ? [] : userEntries;
-
-  let loading = usersToRender.length <= 0 ? (<Spinner animation="border" role="status"><span className="visually-hidden">Loading...</span></Spinner>) : " "; //TODO
+  let loading = pageUsers.length <= 0 ? (<Spinner animation="border" role="status"><span className="visually-hidden">Loading...</span></Spinner>) : " "; //TODO
 
   return (
     <div className="user-page" key={"page" + props.pageNumber}>
       <div>{loading}</div>
       <Accordion>
-        {usersToRender.map((user, index) => {
+        {pageUsers.map((user, index) => {
           return <UserCard user={user} index={index} key={index} />;
         })}
       </Accordion>
