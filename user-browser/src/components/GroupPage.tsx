@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Accordion, Spinner } from "react-bootstrap";
 import { useAppContext } from "../auth/AppContext";
 import { getUserBrowserGroups, UserBrowserGroup } from "../types/UserBrowserGroup";
+import GroupCard from "./GroupCard";
 
 type GroupPageProps = {
   pageNumber: number;
@@ -35,7 +36,9 @@ export default function GroupPage(props: GroupPageProps) {
     <div className="user-page" key={"page" + props.pageNumber}>
       <div>{loading}</div>
       <Accordion>
-      Placeholder 
+      {pageGroups.map((group, index) => {
+          return <GroupCard group={group} index={index} key={index} />;
+        })}
       </Accordion>
     </div>
   );

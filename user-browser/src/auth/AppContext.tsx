@@ -108,8 +108,8 @@ function useProvideAppContext() {
   //Filter function for users
   const filterUsers = async (filter: string) => {
     let filteredUsers = users?.filter((user) => {
-      return user.mail?.startsWith(filter);
-    }); //TODO
+      return user.mail?.includes(filter);
+    }); 
 
     if (filter.length > 0) {
       setShownUsers(filteredUsers);
@@ -121,8 +121,8 @@ function useProvideAppContext() {
   //Filter function for groups
   const filterGroups = async (filter: string) => {
     let filteredGroups = groups?.filter((group) => {
-      return true;
-    }); //TODO
+      return group.mail?.includes(filter);
+    });
 
     if (filter.length > 0) {
       setShownGroups(filteredGroups);
