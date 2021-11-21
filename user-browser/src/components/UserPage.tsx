@@ -4,7 +4,6 @@ import { Accordion, Spinner } from "react-bootstrap";
 import { useAppContext } from "../auth/AppContext";
 import { getDatabaseUsers } from "../service/APIService";
 import UserCard from "./UserCard";
-import { setConstantValue } from "typescript";
 
 type UserPageProps = {
   pageNumber: number;

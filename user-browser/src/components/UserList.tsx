@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { useAppContext } from "../auth/AppContext";
-import { Pagination, Form, Container, Row, Col, Button } from "react-bootstrap";
+import {Form, Container, Row, Col, Button } from "react-bootstrap";
 
 import {
   UnauthenticatedTemplate,
   AuthenticatedTemplate,
 } from "@azure/msal-react";
 import UserPage from "./UserPage";
+import PageList from "./PageList";
 
 export default function UserList() {
   const filterFormRef = useRef<HTMLInputElement>(null);
@@ -26,82 +27,14 @@ export default function UserList() {
     setInitialPage();
   });
 
-  let userPages = [];
-  let numPages = (app.shownUsers ? app.shownUsers.length : pageSize) / pageSize;
-  let currPage = activePage === undefined ? 1 : activePage;
-  let screenStart = Math.floor(currPage - pagesPerScreen) + 1;
-  screenStart = screenStart > 1 ? screenStart : 1;
-
-  if (app.shownUsers) {
-    userPages.push(
-      <Pagination.First
-        key="first"
-        onClick={() => {
-          setActivePage(1);
-        }}
-      />
-    );
-
-    userPages.push(
-      <Pagination.Prev
-        key="prev"
-        onClick={() => {
-          if (currPage > 1) {
-            setActivePage(currPage - 1);
-          }
-        }}
-      />
-    );
-  }
-
-  let index = 0;
-  for (let i = screenStart; i < numPages; i++) {
-    index++;
-
-    if (index > pagesPerScreen) {
-      break;
-    }
-
-    userPages.push(
-      <Pagination.Item
-        key={i}
-        active={i === currPage}
-        onClick={() => {
-          setActivePage(i);
-        }}
-      >
-        {i}
-      </Pagination.Item>
-    );
-  }
-
-  userPages.push(
-    <Pagination.Next
-      key="next"
-      onClick={() => {
-        if (currPage !== numPages && currPage + 1 < numPages) {
-          setActivePage(currPage + 1);
-        }
-      }}
-    />
-  );
-
-  userPages.push(
-    <Pagination.Last
-      key="last"
-      onClick={() => {
-        setActivePage(Math.floor(numPages));
-      }}
-    />
-  );
-
   async function applyFilter() {
     await setActivePage(0);
     app.filterUsers!(filterFormRef.current ? filterFormRef.current.value : "");
     setActivePage(1);
   }
 
-  let pageShown = <UserPage pageNumber={currPage} pageSize={pageSize} />;
+  let currPage = activePage === undefined ? 1 : activePage;
+  let numPages = (app.shownUsers ? app.shownUsers.length : pageSize) / pageSize;
 
   return (
     <div className="content">
@@ -138,9 +71,14 @@ export default function UserList() {
           </Row>
           <Row className="page-container">
             <Col xl="10">
-              <Row>{pageShown}</Row>
+              <Row><UserPage pageNumber={currPage} pageSize={pageSize} /></Row>
               <Row>
-                <Pagination size="lg">{userPages}</Pagination>
+                <PageList
+                  setActivePage={setActivePage}
+                  pagesPerScreen={pagesPerScreen}
+                  numPages={numPages}
+                  currPage={currPage}
+                />
               </Row>
             </Col>
           </Row>
