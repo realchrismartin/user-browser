@@ -29,3 +29,16 @@ body {
   padding-top:1vh;
   padding-bottom:1vh;
 }
+
+.login-element {
+  padding: 1vh;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-card-element {
+  padding-top: 2vh;
+  margin-bottom: 2vh;
+}
+

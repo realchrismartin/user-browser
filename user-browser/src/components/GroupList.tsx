@@ -9,6 +9,7 @@ import {
 import FilterForm from "./FilterForm";
 import GroupPage from "./GroupPage";
 import PageList from "./PageList";
+import LoginPane from "./LoginPane";
 
 export default function GroupList() {
   const app = useAppContext();
@@ -66,7 +67,7 @@ export default function GroupList() {
 
   return (
     <Container className="content">
-      <UnauthenticatedTemplate>You are not logged in.</UnauthenticatedTemplate>
+      <UnauthenticatedTemplate><LoginPane/></UnauthenticatedTemplate>
       <AuthenticatedTemplate>
         <Container>
           <Row>

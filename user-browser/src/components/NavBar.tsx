@@ -55,11 +55,6 @@ export default function NavBar() {
                 <Dropdown.Item onClick={app.signOut!}>Sign Out</Dropdown.Item>
               </NavDropdown>
             </AuthenticatedTemplate>
-            <UnauthenticatedTemplate>
-              <NavItem>
-                <Nav.Link onClick={app.signIn!}>Log In</Nav.Link>
-              </NavItem>
-            </UnauthenticatedTemplate>
           </Nav>
         </Navbar.Collapse>
       </Container>

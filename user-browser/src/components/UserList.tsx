@@ -9,6 +9,7 @@ import {
 import UserPage from "./UserPage";
 import PageList from "./PageList";
 import FilterForm from "./FilterForm";
+import LoginPane from "./LoginPane";
 
 export default function UserList() {
   const app = useAppContext();
@@ -39,7 +40,7 @@ export default function UserList() {
 
   return (
     <Container className="content">
-      <UnauthenticatedTemplate>You are not logged in.</UnauthenticatedTemplate>
+      <UnauthenticatedTemplate><LoginPane/></UnauthenticatedTemplate>
       <AuthenticatedTemplate>
         <Container>
           <Row>
