@@ -13,11 +13,11 @@ export const hasWriteAccess = (user: TokenUser): boolean => {
 
   let writeGroups = user?.groups.filter((group) => { return config?.permissionConfig.write?.includes(group || "group-id-not-present") });
 
-  if (writeGroups.length <= 0) {
-    return false;
+  if (writeGroups.length >= 1) {
+    return true;
   }
 
-  return true;
+  return false;
 }
 
 //Function which determines whether the specified user has admin access
@@ -32,9 +32,9 @@ export const hasAdminAccess = (user: TokenUser): boolean => {
 
   let adminGroups = user?.groups.filter((group) => { return config?.permissionConfig.admin?.includes(group || "group-id-not-present") });
 
-  if (adminGroups.length <= 0) {
-    return false;
+  if (adminGroups.length >= 1) {
+    return true;
   }
 
-  return true;
+  return false;
 }

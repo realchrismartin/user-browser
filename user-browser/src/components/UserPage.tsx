@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getUserBrowserUsers, UserBrowserUser } from "../types/UserBrowserUser";
 import { Accordion, Spinner, Container, Row, Col } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
-import { getDatabaseUsers } from "../service/APIService";
+import { getDatabaseUsers, updateDatabaseUser } from "../service/APIService";
 import UserCard from "./UserCard";
 import { User } from "microsoft-graph";
 

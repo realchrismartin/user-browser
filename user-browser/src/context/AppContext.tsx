@@ -148,11 +148,11 @@ function useProvideAppContext() {
 
     let writeGroups = user.groups.filter((group) => { return permissionConfig.write?.includes(group?.id || "group-id-not-present") });
 
-    if (writeGroups.length <= 0) {
-      return false;
+    if (writeGroups.length >= 1) {
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   //Function which determines whether the current logged in user has admin access
@@ -167,11 +167,11 @@ function useProvideAppContext() {
 
     let adminGroups = user.groups.filter((group) => { return permissionConfig.admin?.includes(group?.id || "group-id-not-present") });
 
-    if (adminGroups.length <= 0) {
-      return false;
+    if (adminGroups.length >= 1) {
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   //Signout function

@@ -29,7 +29,7 @@ export const graphConfig = {
 export const apiConfig = {
   scopes: [apiScope],
   url: apiURL,
-  path: "/api/data/"
+  apiRoute: "/api/users"
 }
 
 export const loginConfig = {
