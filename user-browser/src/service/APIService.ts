@@ -6,6 +6,7 @@ export async function getDatabaseUsers(token : string): Promise<DatabaseUser[]> 
     const pop = `Bearer ${token}`;
   
     let res = await fetch(apiConfig.url + apiConfig.path, {
+      credentials: "include",
       method: "GET",
       mode: "cors",
       cache: "no-cache",

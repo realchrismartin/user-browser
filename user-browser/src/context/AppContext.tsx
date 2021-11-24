@@ -154,6 +154,8 @@ function useProvideAppContext() {
         ...tokenRequest,
       });
 
+
+      console.log(response.accessToken);
       return response.accessToken;
     } catch (error) {
       console.log(error);

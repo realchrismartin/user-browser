@@ -1,4 +1,5 @@
-const config = require("./config").default
+const passport = require("passport");
+const config = require("./config").default;
 const BearerStrategy = require("passport-azure-ad").BearerStrategy;
 
 const passportOptions = {
@@ -15,9 +16,19 @@ const passportOptions = {
   const passportConfig = new BearerStrategy(
     passportOptions,
     (token: any, done: any) => {
-      done(null, {}, token);
+        const user = {groups:token.groups};
+        return done(null, user, token);
     }
   );
 
+  passport.use(passportConfig);
 
-export default passportConfig;
+  passport.serializeUser(function(user : any, done : any) {
+    done(null, user);
+  });
+  
+  passport.deserializeUser(function(user : any, done : any) {
+    done(null, user);
+  });
+
+export default passport;

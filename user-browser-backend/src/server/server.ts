@@ -1,19 +1,16 @@
+import cors from "../config/cors";
 const express = require("express");
-const passport = require("passport");
-const cors = require("cors");
 const config = require("../config/config").default;
-const passportConfig = require("../config/passportConfig").default
+const passport = require("../config/passport").default;
 const apiRouter = require("../router/apiRouter");
 
 function run() {
   const expressApp = express();
-  passport.use(passportConfig);
   expressApp.use(passport.initialize());
-  expressApp.use(cors());
-
+  expressApp.use(cors);
   expressApp.use(
     "/api",
-    passport.authenticate("oauth-bearer", { session: false }),
+    passport.authenticate("oauth-bearer", { session: true }),
     apiRouter
   );
 
