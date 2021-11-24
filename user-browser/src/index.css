@@ -42,3 +42,7 @@ body {
   margin-bottom: 2vh;
 }
 
+.clickable-icon {
+  cursor:pointer;
+}
+

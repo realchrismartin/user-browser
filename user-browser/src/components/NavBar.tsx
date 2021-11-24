@@ -11,7 +11,6 @@ import logo from "../img/logo.png";
 
 import {
   AuthenticatedTemplate,
-  UnauthenticatedTemplate,
 } from "@azure/msal-react";
 
 import { useAppContext } from "../context/AppContext";

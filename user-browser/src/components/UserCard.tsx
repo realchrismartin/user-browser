@@ -1,5 +1,6 @@
 import UserBrowserUser from "../types/UserBrowserUser";
 import { Accordion, Tabs, Tab, Table } from "react-bootstrap";
+import EditableProperty from "./EditableProperty";
 
 type UserCardProps = {
   user: UserBrowserUser;
@@ -12,6 +13,7 @@ export default function UserCard(props: UserCardProps) {
   return (
     <div className="user-card" key={"card-" + props.index}>
       <Accordion.Item eventKey={props.index.toString()}>
+
         <Accordion.Header>{userHeader}</Accordion.Header>
         <Accordion.Body>
           <Tabs defaultActiveKey="user" id="userDetails" className="mb-3">
@@ -19,14 +21,14 @@ export default function UserCard(props: UserCardProps) {
               <Table striped bordered hover>
                 <thead></thead>
                 <tbody>
-                  <tr><td>Name</td><td>{props.user.displayName}</td></tr>
-                  <tr><td>Title</td><td>{props.user.title}</td></tr>
-                  <tr><td>Company</td><td>{props.user.company}</td></tr>
-                  <tr><td>Degree</td><td>{props.user.degree}</td></tr>
-                  <tr><td>Phone</td><td>{props.user.phone}</td></tr>
-                  <tr><td>Center</td><td>{props.user.center}</td></tr>
-                  <tr><td>Division</td><td>{props.user.division}</td></tr>
-                  <tr><td>NPI</td><td>{props.user.npiLocation}</td></tr>
+                  <tr><td>Name</td><td><EditableProperty value={props.user.displayName}/></td></tr>
+                  <tr><td>Title</td><td><EditableProperty value={props.user.title}/></td></tr>
+                  <tr><td>Company</td><td><EditableProperty value={props.user.company}/></td></tr>
+                  <tr><td>Degree</td><td><EditableProperty value={props.user.degree}/></td></tr>
+                  <tr><td>Phone</td><td><EditableProperty value={props.user.phone}/></td></tr>
+                  <tr><td>Center</td><td><EditableProperty value={props.user.center}/></td></tr>
+                  <tr><td>Division</td><td><EditableProperty value={props.user.division}/></td></tr>
+                  <tr><td>NPI</td><td><EditableProperty value={props.user.npiLocation}/></td></tr>
                 </tbody>
               </Table>
             </Tab>

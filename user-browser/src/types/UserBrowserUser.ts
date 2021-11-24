@@ -3,40 +3,40 @@ import { getUserGroups } from "../service/GraphService";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 
 export type UserBrowserUser = {
-  displayName: String | undefined | null;
-  email: String;
-  userID: String | undefined | null;
-  title: String | undefined | null;
-  degree: String | undefined | null;
-  firstName: String | undefined | null;
-  lastName: String | undefined | null;
-  phone: String | undefined | null;
-  mainContact: String | undefined | null;
-  company: String | undefined | null;
-  center: String | undefined | null;
-  division: String | undefined | null;
+  displayName: string | undefined | null;
+  email: string;
+  userID: string | undefined | null;
+  title: string | undefined | null;
+  degree: string | undefined | null;
+  firstName: string | undefined | null;
+  lastName: string | undefined | null;
+  phone: string | undefined | null;
+  mainContact: string | undefined | null;
+  company: string | undefined | null;
+  center: string | undefined | null;
+  division: string | undefined | null;
   principalInvestigator: boolean | undefined | null;
-  npiLocation: String | undefined | null;
-  npi2Location: String | undefined | null;
+  npiLocation: string | undefined | null;
+  npi2Location: string | undefined | null;
   mailingLists: any[];
   securityGroups: any[];
 };
 
 export type DatabaseUser = {
-  userID: String | undefined | null;
-  firstName: String | undefined | null;
-  lastName: String | undefined | null;
-  degree: String | undefined | null;
-  company: String | undefined | null;
-  title: String | undefined | null;
-  email: String | undefined | null;
-  phone: String | undefined | null;
-  fdaCenter: String | undefined | null;
-  fdaDivision: String | undefined | null;
+  userID: string | undefined | null;
+  firstName: string | undefined | null;
+  lastName: string | undefined | null;
+  degree: string | undefined | null;
+  company: string | undefined | null;
+  title: string | undefined | null;
+  email: string | undefined | null;
+  phone: string | undefined | null;
+  fdaCenter: string | undefined | null;
+  fdaDivision: string | undefined | null;
   principalInvestigator: boolean | undefined | null;
-  mainContact: String | undefined | null;
-  npiLocation: String | undefined | null;
-  npi2Location: String | undefined | null;
+  mainContact: string | undefined | null;
+  npiLocation: string | undefined | null;
+  npi2Location: string | undefined | null;
 };
 
 export function getDatabaseUsersFromJson(res: any[]): DatabaseUser[] {
