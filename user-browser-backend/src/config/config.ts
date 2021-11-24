@@ -4,6 +4,10 @@ const config = {
     tenantID: process.env.NODE_APP_SUB_TENANT_ID,
     clientID: process.env.NODE_APP_SUB_CLIENT_ID,
   },
+  permissionConfig: {
+    write: [process.env.REACT_APP_SUB_WRITE_SG_ID],
+    admin: [process.env.REACT_APP_SUB_ADMIN_SG_ID]
+  },
   metadata: {
     authority: "login.microsoftonline.com",
     discovery: ".well-known/openid-configuration",

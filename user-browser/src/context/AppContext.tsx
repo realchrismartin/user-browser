@@ -8,6 +8,7 @@ import React, {
 
 import AppUser from "../types/AppUser";
 import AppError from "../types/AppError";
+import { permissionConfig } from "../config/Config";
 import { getGroups, getUser, getUserGroups, getUsers } from "../service/GraphService";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
@@ -19,6 +20,8 @@ import { Group, User } from "microsoft-graph";
 //Update AppContext type to add more global functions/properties
 type AppContext = {
   user?: AppUser;
+  hasWriteAccess?: Function,
+  hasAdminAccess?: Function,
   users?: User[];
   shownUsers?: User[];
   groups?: Group[];
@@ -41,6 +44,8 @@ type ProvideAppContextProps = {
 const appContext = createContext<AppContext>({
   user: undefined,
   users: undefined,
+  hasWriteAccess: undefined,
+  hasAdminAccess: undefined,
   shownUsers: undefined,
   apiToken: undefined,
   error: undefined,
@@ -109,7 +114,7 @@ function useProvideAppContext() {
   const filterUsers = async (filter: string) => {
     let filteredUsers = users?.filter((user) => {
       return user.mail?.includes(filter);
-    }); 
+    });
 
     if (filter.length > 0) {
       setShownUsers(filteredUsers);
@@ -130,6 +135,44 @@ function useProvideAppContext() {
       setShownGroups(groups);
     }
   };
+
+  //Function which determines whether the current logged in user has write access
+  const hasWriteAccess = (): boolean => {
+    if (!user) {
+      return false
+    }
+
+    if (!user.groups) {
+      return false
+    }
+
+    let writeGroups = user.groups.filter((group) => { return permissionConfig.write?.includes(group?.id || "group-id-not-present") });
+
+    if (writeGroups.length <= 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  //Function which determines whether the current logged in user has admin access
+  const hasAdminAccess = (): boolean => {
+    if (!user) {
+      return false
+    }
+
+    if (!user.groups) {
+      return false
+    }
+
+    let adminGroups = user.groups.filter((group) => { return permissionConfig.admin?.includes(group?.id || "group-id-not-present") });
+
+    if (adminGroups.length <= 0) {
+      return false;
+    }
+
+    return true;
+  }
 
   //Signout function
   const signOut = async () => {
@@ -174,9 +217,9 @@ function useProvideAppContext() {
 
           if (account) {
             const user = await getUser(authProvider);
-            const groups = await getUserGroups(authProvider,user.id!);
+            const groups = await getUserGroups(authProvider, user.id!);
 
-            
+
             setUser({
               displayName: user.displayName || "",
               email: user.mail || user.userPrincipalName || "",
@@ -202,7 +245,7 @@ function useProvideAppContext() {
       }
     };
 
-    const loadGroups = async() => {
+    const loadGroups = async () => {
       if (user && !groups) {
         await getGroups(100, authProvider, setGroups, setShownGroups); //TODO
       }
@@ -216,6 +259,8 @@ function useProvideAppContext() {
 
   return {
     user,
+    hasWriteAccess,
+    hasAdminAccess,
     users,
     shownUsers,
     groups,
