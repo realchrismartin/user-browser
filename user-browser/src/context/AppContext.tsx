@@ -8,7 +8,7 @@ import React, {
 
 import AppUser from "../types/AppUser";
 import AppError from "../types/AppError";
-import { getGroups, getUser, getUsers } from "../service/GraphService";
+import { getGroups, getUser, getUserGroups, getUsers } from "../service/GraphService";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
@@ -155,7 +155,6 @@ function useProvideAppContext() {
       });
 
 
-      console.log(response.accessToken);
       return response.accessToken;
     } catch (error) {
       console.log(error);
@@ -175,10 +174,13 @@ function useProvideAppContext() {
 
           if (account) {
             const user = await getUser(authProvider);
+            const groups = await getUserGroups(authProvider,user.id!);
 
+            
             setUser({
               displayName: user.displayName || "",
               email: user.mail || user.userPrincipalName || "",
+              groups: groups || [],
             });
           }
         } catch (err: any) {

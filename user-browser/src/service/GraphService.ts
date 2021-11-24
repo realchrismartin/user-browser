@@ -27,7 +27,7 @@ export async function getUser(
   // Return the /me API endpoint result as a User object
   const user: User = await graphClient!
     .api("/me")
-    .select("displayName,mail,userPrincipalName")
+    .select("id,displayName,mail,userPrincipalName")
     .get();
 
   return user;

@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/data", (req : any ,res : Response) => { 
     //TODO: make auth decisions based on group membership
-    console.log(req.user);
+    //console.log(req.user.groups)
     getUsers().then((users : User[]) => {
         res.send(users)
     })
