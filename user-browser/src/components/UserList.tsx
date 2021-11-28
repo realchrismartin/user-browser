@@ -8,7 +8,7 @@ import {
 } from "@azure/msal-react";
 import UserPage from "./UserPage";
 import PageList from "./PageList";
-import FilterForm from "./FilterForm";
+import InputForm from "./InputForm";
 import LoginPane from "./LoginPane";
 
 export default function UserList() {
@@ -44,10 +44,12 @@ export default function UserList() {
       <AuthenticatedTemplate>
         <Container>
           <Row>
-            <FilterForm
-              applyFilter={applyFilter}
+            <InputForm
+              applyChange={applyFilter}
               formLabel={"Search Users"}
+              formDefaultValue={""}
               formPlaceholderText={"Enter search term"}
+              showIcon={true}
             />
           </Row>
           <Row className="justify-content-md-center">

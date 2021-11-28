@@ -8,6 +8,10 @@ type UserCardProps = {
 };
 
 export default function UserCard(props: UserCardProps) {
+
+  async function updateUserFunction(propertyId : string, value : string ) {
+
+  }
   const userHeader = props.user.email;
 
   return (
@@ -21,14 +25,14 @@ export default function UserCard(props: UserCardProps) {
               <Table striped bordered hover>
                 <thead></thead>
                 <tbody>
-                  <tr><td>Name</td><td><EditableProperty value={props.user.displayName}/></td></tr>
-                  <tr><td>Title</td><td><EditableProperty value={props.user.title}/></td></tr>
-                  <tr><td>Company</td><td><EditableProperty value={props.user.company}/></td></tr>
-                  <tr><td>Degree</td><td><EditableProperty value={props.user.degree}/></td></tr>
-                  <tr><td>Phone</td><td><EditableProperty value={props.user.phone}/></td></tr>
-                  <tr><td>Center</td><td><EditableProperty value={props.user.center}/></td></tr>
-                  <tr><td>Division</td><td><EditableProperty value={props.user.division}/></td></tr>
-                  <tr><td>NPI</td><td><EditableProperty value={props.user.npiLocation}/></td></tr>
+                  <tr><td>Name</td><td><EditableProperty user={props.user} propertyId={"displayName"} value={props.user.displayName}/></td></tr>
+                  <tr><td>Title</td><td><EditableProperty user={props.user} propertyId={"title"} value={props.user.title}/></td></tr>
+                  <tr><td>Company</td><td><EditableProperty user={props.user} propertyId={"company"} value={props.user.company}/></td></tr>
+                  <tr><td>Degree</td><td><EditableProperty user={props.user} propertyId={"degree"} value={props.user.degree}/></td></tr>
+                  <tr><td>Phone</td><td><EditableProperty user={props.user} propertyId={"phone"} value={props.user.phone}/></td></tr>
+                  <tr><td>Center</td><td><EditableProperty user={props.user} propertyId={"center"} value={props.user.center}/></td></tr>
+                  <tr><td>Division</td><td><EditableProperty user={props.user} propertyId={"division"} value={props.user.division}/></td></tr>
+                  <tr><td>NPI</td><td><EditableProperty user={props.user} propertyId={"npiLocation"} value={props.user.npiLocation}/></td></tr>
                 </tbody>
               </Table>
             </Tab>

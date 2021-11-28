@@ -6,7 +6,7 @@ import {
   UnauthenticatedTemplate,
   AuthenticatedTemplate,
 } from "@azure/msal-react";
-import FilterForm from "./FilterForm";
+import InputForm from "./InputForm";
 import GroupPage from "./GroupPage";
 import PageList from "./PageList";
 import LoginPane from "./LoginPane";
@@ -71,10 +71,12 @@ export default function GroupList() {
       <AuthenticatedTemplate>
         <Container>
           <Row>
-            <FilterForm
-              applyFilter={applyFilter}
+            <InputForm
+              applyChange={applyFilter}
               formLabel={"Search Groups"}
               formPlaceholderText={"Enter search term"}
+              formDefaultValue={""}
+              showIcon={true}
             />
           </Row>
           <Tabs

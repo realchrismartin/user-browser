@@ -16,6 +16,7 @@ import { useMsal } from "@azure/msal-react";
 import { loginConfig, graphConfig, apiConfig } from "../config/Config";
 import { InteractionRequiredAuthError } from "@azure/msal-browser";
 import { Group, User } from "microsoft-graph";
+import UserBrowserUser from "../types/UserBrowserUser";
 
 //Update AppContext type to add more global functions/properties
 type AppContext = {
@@ -34,6 +35,7 @@ type AppContext = {
   clearError?: Function;
   filterUsers?: Function;
   filterGroups?: Function;
+  updateUser?: Function;
   authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
 };
 
@@ -135,6 +137,12 @@ function useProvideAppContext() {
       setShownGroups(groups);
     }
   };
+
+  //Function for updating individual user objects
+  const updateUser = async (user: UserBrowserUser, property: string, value : string) => {
+    //TODO
+    console.log("AppContext: User is updated here")
+  }
 
   //Function which determines whether the current logged in user has write access
   const hasWriteAccess = (): boolean => {
@@ -273,6 +281,7 @@ function useProvideAppContext() {
     clearError,
     filterUsers,
     filterGroups,
+    updateUser,
     authProvider,
   };
 }
