@@ -6,6 +6,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import InputForm from "./InputForm";
 import { useAppContext } from "../context/AppContext";
 import UserBrowserUser from "../types/UserBrowserUser";
+import { updateDatabaseUser } from "../service/APIService";
 
 type EditablePropertyProps = {
   user: UserBrowserUser;
@@ -31,16 +32,27 @@ export default function EditableProperty(props: EditablePropertyProps) {
     setIsBeingEdited(true);
   }
 
-  async function handleSaveChanges(newValue : string) {
-
-    if(newValue === props.value) {
-        setIsBeingEdited(false);
-        return;
+  async function handleSaveChanges(newValue: string) {
+    if (newValue === props.value) {
+      setIsBeingEdited(false);
+      return;
     }
 
-    //TODO: Update user in DB
-    //app.updateUser!(props.user,props.propertyId,newValue);
-    //setIsBeingEdited(false);
+    let res = await updateDatabaseUser(
+      app.apiToken!,
+      props.user.email,
+      props.propertyId,
+      newValue
+    );
+
+    if (res) {
+      //TODO: use getDatabaseUser to set actual values?
+      //TODO: create a new user from the old one, then set the new one
+      //Currently just setting the old one.....
+      app.updateUser!(props.user);
+    }
+
+    setIsBeingEdited(false);
   }
 
   const isEditableElement = (

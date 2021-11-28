@@ -9,13 +9,13 @@ import React, {
 import AppUser from "../types/AppUser";
 import AppError from "../types/AppError";
 import { permissionConfig } from "../config/Config";
-import { getGroups, getUser, getUserGroups, getUsers } from "../service/GraphService";
+import { getGroups, getLoginUser, getUserGroups, getUsers } from "../service/GraphService";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
 import { useMsal } from "@azure/msal-react";
 import { loginConfig, graphConfig, apiConfig } from "../config/Config";
 import { InteractionRequiredAuthError } from "@azure/msal-browser";
-import { Group, User } from "microsoft-graph";
+import { Group } from "microsoft-graph";
 import UserBrowserUser from "../types/UserBrowserUser";
 
 //Update AppContext type to add more global functions/properties
@@ -23,8 +23,8 @@ type AppContext = {
   user?: AppUser;
   hasWriteAccess?: Function,
   hasAdminAccess?: Function,
-  users?: User[];
-  shownUsers?: User[];
+  users?: UserBrowserUser[];
+  shownUsers?: UserBrowserUser[];
   groups?: Group[];
   shownGroups?: Group[];
   error?: AppError;
@@ -78,8 +78,8 @@ function useProvideAppContext() {
   const [user, setUser] = useState<AppUser | undefined>(undefined);
   const [error, setError] = useState<AppError | undefined>(undefined);
   const [apiToken, setAPIAuthToken] = useState<string | undefined>(undefined);
-  const [users, setUsers] = useState<User[] | undefined>(undefined);
-  const [shownUsers, setShownUsers] = useState<User[] | undefined>(undefined);
+  const [users, setUsers] = useState<UserBrowserUser[] | undefined>(undefined);
+  const [shownUsers, setShownUsers] = useState<UserBrowserUser[] | undefined>(undefined);
   const [groups, setGroups] = useState<Group[] | undefined>(undefined);
   const [shownGroups, setShownGroups] = useState<Group[] | undefined>(undefined);
 
@@ -104,7 +104,7 @@ function useProvideAppContext() {
   const signIn = async () => {
     await msal.instance.loginRedirect(loginConfig);
 
-    const user = await getUser(authProvider);
+    const user = await getLoginUser(authProvider);
 
     setUser({
       displayName: user.displayName || "",
@@ -115,7 +115,7 @@ function useProvideAppContext() {
   //Filter function for users
   const filterUsers = async (filter: string) => {
     let filteredUsers = users?.filter((user) => {
-      return user.mail?.includes(filter);
+      return user.email?.includes(filter);
     });
 
     if (filter.length > 0) {
@@ -139,7 +139,8 @@ function useProvideAppContext() {
   };
 
   //Function for updating individual user objects
-  const updateUser = async (user: UserBrowserUser, property: string, value : string) => {
+  //When an user is passed, assume the user is outdated in state
+  const updateUser = async (user: UserBrowserUser) => {
     //TODO
     console.log("AppContext: User is updated here")
   }
@@ -224,7 +225,7 @@ function useProvideAppContext() {
           const account = msal.instance.getActiveAccount();
 
           if (account) {
-            const user = await getUser(authProvider);
+            const user = await getLoginUser(authProvider);
             const groups = await getUserGroups(authProvider, user.id!);
 
 
@@ -247,21 +248,25 @@ function useProvideAppContext() {
       }
     };
 
-    const loadUsers = async () => {
+    const loadInitialUsers = async () => {
       if (user && !users) {
-        await getUsers(100, authProvider, setUsers, setShownUsers); //TODO
+        let users = await getUsers(100, authProvider); 
+        setUsers(users);
+        setShownUsers(users);
       }
     };
 
     const loadGroups = async () => {
       if (user && !groups) {
-        await getGroups(100, authProvider, setGroups, setShownGroups); //TODO
+        let groups = await getGroups(100, authProvider);
+        setGroups(groups);
+        setShownGroups(groups);
       }
     }
 
     checkUser();
     getAPIToken();
-    loadUsers();
+    loadInitialUsers();
     loadGroups();
   });
 

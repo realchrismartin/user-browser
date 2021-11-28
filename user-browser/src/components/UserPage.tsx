@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import { getUserBrowserUsers, UserBrowserUser } from "../types/UserBrowserUser";
 import { Accordion, Spinner, Container, Row, Col } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
-import { getDatabaseUsers } from "../service/APIService";
+import UserBrowserUser, { lazyLoadUserPage } from "../types/UserBrowserUser";
 import UserCard from "./UserCard";
-import { User } from "microsoft-graph";
 
 type UserPageProps = {
-  shownUsers: User[];
+  shownUsers: UserBrowserUser[];
   pageNumber: number;
   pageSize: number;
 };
@@ -20,15 +18,10 @@ export default function UserPage(props: UserPageProps) {
   async function loadPageData(pageNumber: number) {
     if (app.user && props.shownUsers.length > 0 && pageShown !== pageNumber) {
       let start = (pageNumber - 1) * props.pageSize;
-      let apiUsers = props.shownUsers.slice(start, start + props.pageSize);
-      let dbUsers = await getDatabaseUsers(app.apiToken!); //TODO: Retrieves entire list
-      let ubUsers = await getUserBrowserUsers(
-        app.authProvider!,
-        apiUsers,
-        dbUsers
-      );
-
-      setPageUsers(ubUsers);
+      let users = props.shownUsers.slice(start, start + props.pageSize);
+      users = await lazyLoadUserPage(app.authProvider!,app.apiToken!,users);
+      //TODO: Perhaps save users after load (since may be changed) using app.updateUser? This might cause issues with data not refreshing.
+      setPageUsers(users);
       setPageShown(pageNumber);
     }
   }

@@ -6,6 +6,7 @@ import {
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
 import { Group, User } from "microsoft-graph";
 import { GroupMember } from "../types/GroupMember";
+import  UserBrowserUser, {getUnloadedUserBrowserUser } from "../types/UserBrowserUser";
 
 let graphClient: Client | undefined = undefined;
 
@@ -19,12 +20,11 @@ function ensureClient(authProvider: AuthCodeMSALBrowserAuthenticationProvider) {
   return graphClient;
 }
 
-export async function getUser(
+export async function getLoginUser(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider
 ): Promise<User> {
   ensureClient(authProvider);
 
-  // Return the /me API endpoint result as a User object
   const user: User = await graphClient!
     .api("/me")
     .select("id,displayName,mail,userPrincipalName")
@@ -35,9 +35,7 @@ export async function getUser(
 
 export async function getUsers(pageSize : number,
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
-  setUsers: Function,
-  setShownUsers: Function
-): Promise<User[]> {
+): Promise<UserBrowserUser[]> {
 
   ensureClient(authProvider);
 
@@ -47,36 +45,30 @@ export async function getUsers(pageSize : number,
     .top(pageSize)
     .get();
 
-    let users: User[] = [];
+    let users : User[] = response.value;
+    let ubUsers : UserBrowserUser[] = [];
 
-    for(let user of response.value) {
-      users.push(user);
+    for(let user of users) {
+      ubUsers.push(getUnloadedUserBrowserUser(user));
     }
-
-    setUsers(users);
-    setShownUsers(users);
 
     if (response["@odata.nextLink"]) {
   
       let pageIterator = new PageIterator(graphClient!, response, (user) => {
-        users.push(user);
-        setUsers(users);
-        setShownUsers(users);
+        ubUsers.push(getUnloadedUserBrowserUser(user));
         return true;
       });
   
       await pageIterator.iterate();
   
-      return users;
-    } else {
-      return response.value;
     }
+
+    return ubUsers;
+
 }
 
 export async function getGroups(pageSize : number,
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
-  setGroups: Function,
-  setShownGroups: Function
 ): Promise<Group[]> {
 
   ensureClient(authProvider);
@@ -93,16 +85,10 @@ export async function getGroups(pageSize : number,
       groups.push(group);
     }
 
-
-    setGroups(groups);
-    setShownGroups(groups);
-
     if (response["@odata.nextLink"]) {
   
       let pageIterator = new PageIterator(graphClient!, response, (group) => {
         groups.push(group);
-        setGroups(groups);
-        setShownGroups(groups);
         return true;
       });
   
@@ -110,7 +96,7 @@ export async function getGroups(pageSize : number,
   
       return groups;
     } else {
-      return response.value;
+      return groups;
     }
 }
 

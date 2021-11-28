@@ -1,8 +1,11 @@
 import { User, Group } from "microsoft-graph";
-import { getUserGroups } from "../service/GraphService";
+import { getDatabaseUser } from "../service/APIService";
 import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
+import { getUserGroups } from "../service/GraphService";
 
 export type UserBrowserUser = {
+  hasLoadedData: boolean;
+  azureId: string,
   displayName: string | undefined | null;
   email: string;
   userID: string | undefined | null;
@@ -41,72 +44,112 @@ export type DatabaseUser = {
 
 export function getDatabaseUsersFromJson(res: any[]): DatabaseUser[] {
   return res.map((user) => {
-    return {
-      userID: user["UserID"],
-      firstName: user["FirstName"],
-      lastName: user["LastName"],
-      degree: user["Degree"],
-      company: user["Company"],
-      title: user["Title"],
-      email: user["Email"],
-      phone: user["Phone"],
-      fdaCenter: user["FDACenter"],
-      fdaDivision: user["FDADivision"],
-      principalInvestigator: user["PrincipalInvestigator"],
-      mainContact: user["MainContact"],
-      npiLocation: user["NPI1Location"],
-      npi2Location: user["NPI2Location"],
-    };
+    return getDatabaseUserFromJson(user);
   });
 }
 
-function getUserBrowserUser(
-user: User,
-databaseUser : DatabaseUser | undefined,
-groups: Group[]
-) : UserBrowserUser {
-
-    return {
-      displayName: user?.displayName ? user.displayName : "",
-      email: user?.mail ? user.mail : "",
-      userID: databaseUser?.userID ? databaseUser.userID : "None",
-      title: databaseUser?.title ? databaseUser.title : "None",
-      degree: databaseUser?.degree ? databaseUser.degree : "None",
-      firstName: databaseUser?.firstName ? databaseUser.firstName : "",
-      lastName: databaseUser?.lastName ? databaseUser.lastName : "",
-      phone: databaseUser?.phone ? databaseUser.phone : "None provided",
-      mainContact: databaseUser?.mainContact ? databaseUser.mainContact : "",
-      company: databaseUser?.company ? databaseUser.company : "",
-      center: databaseUser?.fdaCenter ? databaseUser.fdaCenter : "",
-      division: databaseUser?.fdaDivision ? databaseUser.fdaDivision : "",
-      principalInvestigator: databaseUser?.principalInvestigator !== undefined ? databaseUser.principalInvestigator : false,
-      npiLocation: databaseUser?.npiLocation
-        ? databaseUser.npi2Location
-        : "None",
-      npi2Location: databaseUser?.npi2Location
-        ? databaseUser.npi2Location
-        : "None",
-      mailingLists: groups,
-      securityGroups: groups //TODO
-    }
+export function getDatabaseUserFromJson(user: any): DatabaseUser {
+  return {
+    userID: user["UserID"],
+    firstName: user["FirstName"],
+    lastName: user["LastName"],
+    degree: user["Degree"],
+    company: user["Company"],
+    title: user["Title"],
+    email: user["Email"],
+    phone: user["Phone"],
+    fdaCenter: user["FDACenter"],
+    fdaDivision: user["FDADivision"],
+    principalInvestigator: user["PrincipalInvestigator"],
+    mainContact: user["MainContact"],
+    npiLocation: user["NPI1Location"],
+    npi2Location: user["NPI2Location"],
+  };
 }
 
-export async function getUserBrowserUsers(
+export function getUnloadedUserBrowserUser(user: User): UserBrowserUser {
+  return {
+    hasLoadedData: false,
+    azureId: user?.id ? user.id : "",
+    displayName: user?.displayName ? user.displayName : "",
+    email: user?.mail ? user.mail : "",
+    userID: "None",
+    title: "None",
+    degree: "None",
+    firstName: "None",
+    lastName: "None",
+    phone: "None",
+    mainContact: "None",
+    company: "None",
+    center: "None",
+    division: "None",
+    principalInvestigator: false,
+    npiLocation: "None",
+    npi2Location: "None",
+    mailingLists: [],
+    securityGroups: [],
+  };
+}
+
+export function getLoadedUserBrowserUser(
+  user: User,
+  databaseUser: DatabaseUser | undefined,
+  groups: Group[]
+): UserBrowserUser {
+  return {
+    hasLoadedData: true,
+    azureId: user?.id ? user.id : "",
+    displayName: user?.displayName ? user.displayName : "",
+    email: user?.mail ? user.mail : "",
+    userID: databaseUser?.userID ? databaseUser.userID : "None",
+    title: databaseUser?.title ? databaseUser.title : "None",
+    degree: databaseUser?.degree ? databaseUser.degree : "None",
+    firstName: databaseUser?.firstName ? databaseUser.firstName : "",
+    lastName: databaseUser?.lastName ? databaseUser.lastName : "",
+    phone: databaseUser?.phone ? databaseUser.phone : "None provided",
+    mainContact: databaseUser?.mainContact ? databaseUser.mainContact : "",
+    company: databaseUser?.company ? databaseUser.company : "",
+    center: databaseUser?.fdaCenter ? databaseUser.fdaCenter : "",
+    division: databaseUser?.fdaDivision ? databaseUser.fdaDivision : "",
+    principalInvestigator:
+      databaseUser?.principalInvestigator !== undefined
+        ? databaseUser.principalInvestigator
+        : false,
+    npiLocation: databaseUser?.npiLocation ? databaseUser.npi2Location : "None",
+    npi2Location: databaseUser?.npi2Location
+      ? databaseUser.npi2Location
+      : "None",
+    mailingLists: groups,
+    securityGroups: groups, //TODO
+  };
+}
+
+async function lazyLoadUserData(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
-  apiUsers: User[],
-  databaseUsers: DatabaseUser[]
+  token: string,
+  user: UserBrowserUser
+): Promise<UserBrowserUser> {
+
+  if(user.hasLoadedData) {
+    return user;
+  }
+
+  let databaseUser = await getDatabaseUser(token, user);
+  let groups = await getUserGroups(authProvider,user.azureId);
+  return getLoadedUserBrowserUser(user,databaseUser,groups);
+}
+
+export async function lazyLoadUserPage(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  token: string,
+  users: UserBrowserUser[]
 ): Promise<UserBrowserUser[]> {
-
-    return Promise.all(apiUsers.map(async (user) => {
-          
-      let databaseUser = databaseUsers.find((dbUser) => {
-        return user.mail?.toLowerCase() === dbUser.email?.toLowerCase();
-      })
-
-      let groups = await getUserGroups(authProvider,user?.id ? user.id : "") //May be undefined
-
-      return getUserBrowserUser(user,databaseUser,groups)
-    }))
+  let loadedUsers = await Promise.all(
+    users.map((user) => {
+      return lazyLoadUserData(authProvider,token,user);
+    })
+  );
+  return loadedUsers;
 }
 
 export default UserBrowserUser;
