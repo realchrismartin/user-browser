@@ -7,7 +7,9 @@ import { apiConfig } from "../config/Config";
 //Get a specific database user
 export async function getDatabaseUser(token: string, user: UserBrowserUser): Promise<DatabaseUser | undefined> {
   try {
-    let res = await fetch(apiConfig.url + apiConfig.apiRoute + "?email=" + user?.email, {
+
+    //TODO: Update to use new endpoint
+    let res = await fetch(apiConfig.url + apiConfig.apiRoute, {
       credentials: "include",
       method: "GET",
       mode: "cors",
@@ -17,8 +19,13 @@ export async function getDatabaseUser(token: string, user: UserBrowserUser): Pro
       },
     });
 
-    let json = await res.json();
-    return getDatabaseUserFromJson(json);
+    let json : any[] = await res.json();
+
+    //TODO: Remove this once new endpoint is constructed
+    //NOTE: This will throw errors if indexing into an empty array
+    let userJson = json.filter((jUser) =>  { return user.email.toLowerCase() === jUser.Email.toLowerCase() })[0];
+    let dbUser = getDatabaseUserFromJson(userJson);
+    return dbUser;
   } catch (error: any) {
     console.log(error);
     return;
@@ -44,8 +51,6 @@ export async function updateDatabaseUser(
     });
 
     if (!res.ok) {
-      let json = await res.json();
-      console.log(json);
       return false;
     }
 

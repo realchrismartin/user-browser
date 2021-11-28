@@ -9,9 +9,6 @@ type UserCardProps = {
 
 export default function UserCard(props: UserCardProps) {
 
-  async function updateUserFunction(propertyId : string, value : string ) {
-
-  }
   const userHeader = props.user.email;
 
   return (

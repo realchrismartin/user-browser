@@ -44,7 +44,6 @@ export default function GroupList() {
   }
 
   async function changeTab(tab : string) {
-    console.log(tab);
     if (tabToggled !== tab) {
       await setActivePage(0);
       setTabToggled(tab);

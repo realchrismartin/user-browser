@@ -49,6 +49,7 @@ export function getDatabaseUsersFromJson(res: any[]): DatabaseUser[] {
 }
 
 export function getDatabaseUserFromJson(user: any): DatabaseUser {
+  console.log(user);
   return {
     userID: user["UserID"],
     firstName: user["FirstName"],
@@ -92,15 +93,15 @@ export function getUnloadedUserBrowserUser(user: User): UserBrowserUser {
 }
 
 export function getLoadedUserBrowserUser(
-  user: User,
+  user: UserBrowserUser,
   databaseUser: DatabaseUser | undefined,
   groups: Group[]
 ): UserBrowserUser {
   return {
     hasLoadedData: true,
-    azureId: user?.id ? user.id : "",
-    displayName: user?.displayName ? user.displayName : "",
-    email: user?.mail ? user.mail : "",
+    azureId: user.azureId,
+    displayName: user.displayName,
+    email: user.email,
     userID: databaseUser?.userID ? databaseUser.userID : "None",
     title: databaseUser?.title ? databaseUser.title : "None",
     degree: databaseUser?.degree ? databaseUser.degree : "None",
