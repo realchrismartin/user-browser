@@ -2,13 +2,9 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col } from "react-bootstrap";
 
-import { AuthenticatedSection } from "./AuthenticatedSection";
-import { UnauthenticatedSection } from "./UnauthenticatedSection";
-
 import UserPage from "./UserPage";
 import PageList from "./PageList";
 import InputForm from "./InputForm";
-import LoginPane from "./LoginPane";
 
 export default function UserList() {
   const app = useAppContext();
@@ -38,35 +34,30 @@ export default function UserList() {
 
   return (
     <Container className="content">
-      <UnauthenticatedSection><LoginPane/></UnauthenticatedSection>
-      <AuthenticatedSection>
-        <Container>
-          <Row>
-            <InputForm
-              applyChange={applyFilter}
-              formLabel={"Search Users"}
-              formDefaultValue={""}
-              formPlaceholderText={"Enter search term"}
-              showIcon={true}
-            />
-          </Row>
-          <Row className="justify-content-md-center">
-            <Col xl="10">
-              <Row>
-                <UserPage shownUsers={shownUsers} pageNumber={currPage} pageSize={pageSize} />
-              </Row>
-              <Row className="justify-content-md-center">
-                <PageList
-                  setActivePage={setActivePage}
-                  pagesPerScreen={pagesPerScreen}
-                  numPages={numPages}
-                  currPage={currPage}
-                />
-              </Row>
-            </Col>
-          </Row>
-        </Container>
-      </AuthenticatedSection>
+        <Row>
+          <InputForm
+            applyChange={applyFilter}
+            formLabel={"Search Users"}
+            formDefaultValue={""}
+            formPlaceholderText={"Enter search term"}
+            showIcon={true}
+          />
+        </Row>
+        <Row className="justify-content-md-center">
+          <Col xl="10">
+            <Row>
+              <UserPage shownUsers={shownUsers} pageNumber={currPage} pageSize={pageSize} />
+            </Row>
+            <Row className="justify-content-md-center">
+              <PageList
+                setActivePage={setActivePage}
+                pagesPerScreen={pagesPerScreen}
+                numPages={numPages}
+                currPage={currPage}
+              />
+            </Row>
+          </Col>
+        </Row>
     </Container>
   );
 }

@@ -2,13 +2,9 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col, Tab, Tabs } from "react-bootstrap";
 
-import { AuthenticatedSection } from "./AuthenticatedSection";
-import { UnauthenticatedSection } from "./UnauthenticatedSection";
-
 import InputForm from "./InputForm";
 import GroupPage from "./GroupPage";
 import PageList from "./PageList";
-import LoginPane from "./LoginPane";
 
 export default function GroupList() {
   const app = useAppContext();
@@ -64,51 +60,46 @@ export default function GroupList() {
 
   return (
     <Container className="content">
-      <UnauthenticatedSection><LoginPane/></UnauthenticatedSection>
-      <AuthenticatedSection>
-        <Container>
-          <Row>
-            <InputForm
-              applyChange={applyFilter}
-              formLabel={"Search Groups"}
-              formPlaceholderText={"Enter search term"}
-              formDefaultValue={""}
-              showIcon={true}
-            />
-          </Row>
-          <Tabs
-            defaultActiveKey="mailGroups"
-            id="mailGroupsList"
-            className="mb-3"
-            onSelect={(tab) => {
-              changeTab(tab ? tab : "mailGroups");
-              applyFilter("");
-            }}
-          >
-            <Tab eventKey="mailGroups" title="Mail Groups"></Tab>
-            <Tab eventKey="securityGroups" title="Security Groups"></Tab>
-          </Tabs>
-          <Row className="justify-content-md-center">
-            <Col xl="10">
-              <Row>
-                <GroupPage
-                  shownGroups={shownGroups}
-                  pageNumber={currPage}
-                  pageSize={pageSize}
-                />
-              </Row>
-              <Row className="justify-content-md-center">
-                <PageList
-                  setActivePage={setActivePage}
-                  pagesPerScreen={pagesPerScreen}
-                  numPages={numPages}
-                  currPage={currPage}
-                />
-              </Row>
-            </Col>
-          </Row>
-        </Container>
-      </AuthenticatedSection>
+        <Row>
+          <InputForm
+            applyChange={applyFilter}
+            formLabel={"Search Groups"}
+            formPlaceholderText={"Enter search term"}
+            formDefaultValue={""}
+            showIcon={true}
+          />
+        </Row>
+        <Tabs
+          defaultActiveKey="mailGroups"
+          id="mailGroupsList"
+          className="mb-3"
+          onSelect={(tab) => {
+            changeTab(tab ? tab : "mailGroups");
+            applyFilter("");
+          }}
+        >
+          <Tab eventKey="mailGroups" title="Mail Groups"></Tab>
+          <Tab eventKey="securityGroups" title="Security Groups"></Tab>
+        </Tabs>
+        <Row className="justify-content-md-center">
+          <Col xl="10">
+            <Row>
+              <GroupPage
+                shownGroups={shownGroups}
+                pageNumber={currPage}
+                pageSize={pageSize}
+              />
+            </Row>
+            <Row className="justify-content-md-center">
+              <PageList
+                setActivePage={setActivePage}
+                pagesPerScreen={pagesPerScreen}
+                numPages={numPages}
+                currPage={currPage}
+              />
+            </Row>
+          </Col>
+        </Row>
     </Container>
   );
 }

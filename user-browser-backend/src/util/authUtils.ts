@@ -1,17 +1,18 @@
 const config = require("../config/config").default;
-import { TokenUser } from "../types/TokenUser";
 
 //Function which determines whether the specified user has write access
-export const hasWriteAccess = (user: TokenUser): boolean => {
+export const hasWriteAccess = (user : any): boolean => {
+
   if (!user) {
     return false
   }
 
+  //TODO: no groups currently, this will always return false
   if (!user.groups) {
     return false
   }
 
-  let writeGroups = user?.groups.filter((group) => { return config?.permissionConfig.write?.includes(group || "group-id-not-present") });
+  let writeGroups = user?.groups.filter((group : string) => { return config?.permissions?.write?.includes(group || "group-id-not-present") });
 
   if (writeGroups.length >= 1) {
     return true;
@@ -21,16 +22,17 @@ export const hasWriteAccess = (user: TokenUser): boolean => {
 }
 
 //Function which determines whether the specified user has admin access
-export const hasAdminAccess = (user: TokenUser): boolean => {
+export const hasAdminAccess = (user: any): boolean => {
+
   if (!user) {
     return false
   }
 
-  if (!user.groups) {
+  if (!user.groups) { //same as above
     return false
   }
 
-  let adminGroups = user?.groups.filter((group) => { return config?.permissionConfig.admin?.includes(group || "group-id-not-present") });
+  let adminGroups = user?.groups.filter((group : string) => { return config?.permissions?.admin?.includes(group || "group-id-not-present") });
 
   if (adminGroups.length >= 1) {
     return true;

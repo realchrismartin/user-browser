@@ -5,6 +5,8 @@ type SectionProps = {
     children : any;
 };
 
-export function AuthenticatedSection(props : SectionProps): React.ReactElement | null {
-    return useAppContext().user == null ? null : props.children; //Only return children if user is in app context
+//This section only displays children if the a user is logged in
+export default function AuthenticatedSection(props : SectionProps): React.ReactElement | null {
+    const context = useAppContext();
+    return context.user !== undefined ? props.children : null; //Only return children if user is in app context
 }

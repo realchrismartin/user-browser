@@ -7,7 +7,7 @@ import UserBrowserGroup from "./UserBrowserGroup";
 type AppUser = {
   displayName?: string;
   email?: string;
-  groups?: UserBrowserGroup[]
+  groups?: UserBrowserGroup[] //TODO: is this the wrong data type?
 };
 
 export default AppUser;

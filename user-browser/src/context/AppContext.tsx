@@ -11,7 +11,8 @@ import AppError from "../types/AppError";
 import { permissionConfig } from "../config/Config";
 import UserBrowserUser from "../types/UserBrowserUser";
 import UserBrowserGroup from "../types/UserBrowserGroup";
-import { authenticateUser } from "../service/APIService";
+import { completeSignIn, signInUser, signOutUser } from "../service/APIService";
+import { sign } from "crypto";
 
 //Update AppContext type to add more global functions/properties
 type AppContext = {
@@ -77,34 +78,6 @@ function useProvideAppContext() {
   const [shownUsers, setShownUsers] = useState<UserBrowserUser[] | undefined>(undefined);
   const [shownGroups, setShownGroups] = useState<UserBrowserGroup[] | undefined>(undefined);
 
-  //Set the user's auth state on context load
-  useEffect(() => {
-    const setUserAuthState = async () => {
-      if (!user) {
-        try {
-
-           let user = await authenticateUser();
-
-           if(!user) 
-           {
-            return;
-           }
-
-            setUser({
-              displayName: user.displayName || "",
-              email: user.email || "",
-              groups: user.groups || [],
-            });
-
-        } catch (err: any) {
-          displayError(err.message);
-        }
-      }
-    };
-
-    setUserAuthState();
-  });
-
   //Functions for displaying errors
   const displayError = (message: string, debug?: string) => {
     setError({ message, debug });
@@ -117,27 +90,28 @@ function useProvideAppContext() {
   //Signin function
   const signIn = async () => {
 
-    //TODO: signin in the backend
-    //TODO: replace with actual user from backend
+    if(user)
+    {
+      console.log("User is already logged in");
+      return;
+    }
 
-    let user = {
-      displayName: "Fake Logged In User",
-      userPrincipalName: "Fake User",
-      mail: "fake@email.com",
-      groups: ["fakegroup"]
-    };
-
-    setUser({
-      displayName: user.displayName || "",
-      email: user.mail || user.userPrincipalName || "",
-    });
+    signInUser(); //Sign in with redirects, etc.
   };
 
   //Signout function
   const signOut = async () => {
-    //TODO: sign out in the backend
-    console.log("TODO: sign out");
+    
+    if(!user)
+    {
+      return; //Can't sign out, not signed in
+    }
+
+    //Clear the local state
     setUser(undefined);
+
+    //Sign out with the IDP
+    signOutUser();
   };
 
   //Filter function for users
@@ -203,6 +177,26 @@ function useProvideAppContext() {
 
     return false;
   }
+
+  const ensureUserSignedIn = async () => {
+    if(user)
+    {
+      return;
+    }
+
+    let signedInUser = await completeSignIn(); //Try to complete sign-in
+
+    if(signedInUser)
+    {
+      console.log("ensureUserSignedIn: user just signed in: ",signedInUser);
+      setUser(signedInUser);
+    }
+  };
+
+  //Set the user's auth state on context load
+  useEffect(() => {
+    ensureUserSignedIn();
+  });
 
   return {
     user,

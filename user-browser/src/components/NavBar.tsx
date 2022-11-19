@@ -9,7 +9,7 @@ import {
 
 import logo from "../img/logo.png";
 
-import { AuthenticatedSection} from "./AuthenticatedSection";
+import AuthenticatedSection from "./AuthenticatedSection";
 import { useAppContext } from "../context/AppContext";
 
 export default function NavBar() {

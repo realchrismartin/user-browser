@@ -1,34 +1,33 @@
 const passport = require("passport");
 const config = require("./config").default;
-const BearerStrategy = require("passport-azure-ad").BearerStrategy;
+const SamlStrategy = require('passport-saml').Strategy;
 
-const passportOptions = {
-    identityMetadata: `https://${config.metadata.authority}/${config.credentials.tenantID}/${config.metadata.version}/${config.metadata.discovery}`,
-    issuer: `https://sts.windows.net/${config.credentials.tenantID}/`,
-    clientID: config.credentials.clientID,
-    audience: "api://" + config.credentials.clientID,
-    validateIssuer: config.settings.validateIssuer,
-    passReqToCallback: config.settings.passReqToCallback,
-    loggingLevel: config.settings.loggingLevel,
-    scope: config.protectedRoutes.test.scopes,
-  };
-
-  const passportConfig = new BearerStrategy(
-    passportOptions,
-    (token: any, done: any) => {
-        const user = {groups:token.groups};
-        return done(null, user, token);
-    }
+  //Passport SAML strategy definition.
+  //Tells passport to use our config.passport.saml
+  //Also indicates that when a user is authenticated, their data should be returned as mapped below.
+  //This data will be accessible as an object: req.user
+  passport.use(new SamlStrategy(
+    config.passport.saml,
+    function (profile : any, done : any) {
+      return done(null,
+        {
+          id: profile.nameID,
+          email: profile.nameID,
+          displayName: profile.nameID,
+          firstName: profile.nameID,
+          lastName: profile.nameID,
+        });
+    })
   );
 
-  passport.use(passportConfig);
-
+  //Functions to push data into and out of our session objects
+  //These are called internally by passport 
   passport.serializeUser(function(user : any, done : any) {
-    done(null, user);
+    done(null, user); 
   });
   
   passport.deserializeUser(function(user : any, done : any) {
-    done(null, user);
+    done(null, user); 
   });
 
 export default passport;

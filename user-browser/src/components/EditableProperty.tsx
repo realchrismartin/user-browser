@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import ReadAccessTemplate from "./ReadAccessTemplate";
-import WriteAccessTemplate from "./WriteAccessTemplate";
+import ReadOnlySection from "./ReadOnlySection";
+import ReadWriteSection from "./ReadWriteSection";
 import { PencilSquare } from "react-bootstrap-icons";
 import { Col, Container, Row } from "react-bootstrap";
 import InputForm from "./InputForm";
@@ -14,6 +14,7 @@ type EditablePropertyProps = {
   value: string | undefined | null;
 };
 
+//This component represents a single editable field / property for a user card
 export default function EditableProperty(props: EditablePropertyProps) {
   const app = useAppContext();
   const [isBeingEdited, setIsBeingEdited] = useState<boolean>();
@@ -85,8 +86,8 @@ export default function EditableProperty(props: EditablePropertyProps) {
 
   return (
     <div>
-      <WriteAccessTemplate>{writeElement}</WriteAccessTemplate>
-      <ReadAccessTemplate>{readElement}</ReadAccessTemplate>
+      <ReadWriteSection>{writeElement}</ReadWriteSection>
+      <ReadOnlySection>{readElement}</ReadOnlySection>
     </div>
   );
 }

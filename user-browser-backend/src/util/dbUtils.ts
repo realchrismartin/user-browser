@@ -1,4 +1,3 @@
-import { SalesQuoteLine } from "@microsoft/microsoft-graph-types-beta";
 import { User } from "../types/User";
 import { ConnectionPool, IResult } from "mssql";
 
@@ -8,10 +7,10 @@ const sql = require("mssql");
 async function getUsers(): Promise<User[]> {
   return new Promise((resolve, reject) => {
     sql
-      .connect(config.sqlConfig)
+      .connect(config.sql)
       .then((connectionPool: ConnectionPool) => {
         connectionPool
-          .query(config.sqlConfig.usersQuery)
+          .query(config.sql.usersQuery)
           .then((dbResult: IResult<any>) => {
             resolve(dbResult.recordset);
           });
