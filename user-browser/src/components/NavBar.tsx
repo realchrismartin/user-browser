@@ -13,8 +13,8 @@ import AuthenticatedSection from "./AuthenticatedSection";
 import { useAppContext } from "../context/AppContext";
 
 export default function NavBar() {
-  const app = useAppContext();
-  const user = app.user || { displayName: "", email: "" };
+  const context = useAppContext();
+  const user = context.appUser || { displayName: "", email: "" };
 
   return (
     <Navbar bg="dark" variant="dark" expand="md" fixed="top">
@@ -48,7 +48,7 @@ export default function NavBar() {
                   {user.email}
                 </p>
                 <Dropdown.Divider />
-                <Dropdown.Item onClick={app.signOut!}>Sign Out</Dropdown.Item>
+                <Dropdown.Item onClick={context.signOut!}>Sign Out</Dropdown.Item>
               </NavDropdown>
             </AuthenticatedSection>
           </Nav>

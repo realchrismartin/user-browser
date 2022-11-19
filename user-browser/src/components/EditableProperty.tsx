@@ -16,7 +16,7 @@ type EditablePropertyProps = {
 
 //This component represents a single editable field / property for a user card
 export default function EditableProperty(props: EditablePropertyProps) {
-  const app = useAppContext();
+
   const [isBeingEdited, setIsBeingEdited] = useState<boolean>();
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function EditableProperty(props: EditablePropertyProps) {
       //TODO: use getUser to set actual values?
       //TODO: create a new user from the old one, then set the new one
       //Currently just setting the old one.....
-      app.updateUser!(props.user);
+      //context.updateUser!(props.user);
     }
 
     setIsBeingEdited(false);

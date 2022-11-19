@@ -11,12 +11,12 @@ type GroupPageProps = {
 };
 
 export default function GroupPage(props: GroupPageProps) {
-  const app = useAppContext();
+  const context = useAppContext();
   const [pageGroups, setPageGroups] = useState<UserBrowserGroup[]>([]);
   const [pageShown, setPageShown] = useState<number>(0);
 
   async function loadPageData(pageNumber: number) {
-    if (app.user && props.shownGroups.length > 0 && pageShown !== pageNumber) {
+    if (context.appUser && props.shownGroups.length > 0 && pageShown !== pageNumber) {
       
       //TODO: reenable
       /*

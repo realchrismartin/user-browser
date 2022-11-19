@@ -8,5 +8,5 @@ type SectionProps = {
 //Section which only shows if a user is not authenticated
 export default function UnauthenticatedSection(props : SectionProps): React.ReactElement | null {
     const context = useAppContext();
-    return context.user === undefined ? props.children : null; //Only return children if user is not in app state
+    return context.appUser === undefined ? props.children : null; //Only return children if user is not in app state
 }

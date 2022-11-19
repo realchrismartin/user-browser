@@ -11,12 +11,12 @@ type UserPageProps = {
 };
 
 export default function UserPage(props: UserPageProps) {
-  const app = useAppContext();
+  const context = useAppContext();
   const [pageUsers, setPageUsers] = useState<UserBrowserUser[]>([]);
   const [pageShown, setPageShown] = useState<number>(0);
 
   async function loadPageData(pageNumber: number) {
-    if (app.user && props.shownUsers.length > 0 && pageShown !== pageNumber) {
+    if (context.appUser && props.shownUsers.length > 0 && pageShown !== pageNumber) {
       let start = (pageNumber - 1) * props.pageSize;
       let users = props.shownUsers.slice(start, start + props.pageSize);
       setPageUsers(users);

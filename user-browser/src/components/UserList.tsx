@@ -7,7 +7,7 @@ import PageList from "./PageList";
 import InputForm from "./InputForm";
 
 export default function UserList() {
-  const app = useAppContext();
+  const context = useAppContext();
   const pageSize = 10;
   const pagesPerScreen = 5;
 
@@ -24,11 +24,12 @@ export default function UserList() {
   });
 
   async function applyFilter(filter: string) {
-    app.filterUsers!(filter);
+    //app.filterUsers!(filter);
+    //TODO: apply filter
     setActivePage(1);
   }
 
-  let shownUsers = app.shownUsers ? app.shownUsers : [];
+  let shownUsers = context.users ? context.users : [];
   let currPage = activePage === undefined ? 1 : activePage;
   let numPages = shownUsers.length / pageSize;
 

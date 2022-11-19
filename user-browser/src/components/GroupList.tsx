@@ -7,7 +7,7 @@ import GroupPage from "./GroupPage";
 import PageList from "./PageList";
 
 export default function GroupList() {
-  const app = useAppContext();
+  const context = useAppContext();
   const pageSize = 10;
   const pagesPerScreen = 5;
 
@@ -33,7 +33,8 @@ export default function GroupList() {
   });
 
   async function applyFilter(filter: string) {
-    app.filterGroups!(filter);
+    //app.filterGroups!(filter);
+    //TODO: fix filtering
     setActivePage(1);
   }
 
@@ -44,7 +45,7 @@ export default function GroupList() {
     }
   }
 
-  let shownGroups = app.shownGroups ? app.shownGroups.filter((group) => {
+  let shownGroups = context.groups ? context.groups.filter((group:any) => {
     
     if (
       tabToggled === "securityGroups"

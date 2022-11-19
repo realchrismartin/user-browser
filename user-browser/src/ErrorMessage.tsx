@@ -2,14 +2,14 @@ import { Alert } from 'react-bootstrap';
 import { useAppContext } from './context/AppContext';
 
 export default function ErrorMessage() {
-  const app = useAppContext();
+  const context = useAppContext();
 
-  if (app.error) {
+  if (context.error) {
     return (
-      <Alert className="sub-alert" variant="danger" dismissible onClose={() => app.clearError!()}>
-        <p className="mb-3">{app.error.message}</p>
-        { app.error.debug ?
-          <pre className="alert-pre border bg-light p-2"><code>{app.error.debug}</code></pre>
+      <Alert className="sub-alert" variant="danger" dismissible onClose={() => context.clearError!()}>
+        <p className="mb-3">{context.error.message}</p>
+        { context.error.debug ?
+          <pre className="alert-pre border bg-light p-2"><code>{context.error.debug}</code></pre>
           : null
         }
       </Alert>

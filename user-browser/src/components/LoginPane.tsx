@@ -3,7 +3,7 @@ import { useAppContext } from "../context/AppContext";
 import logo from "../img/logo.png";
 
 export default function LoginPane() {
-  const app = useAppContext();
+  const context = useAppContext();
 
   return (
     <Container fluid>
@@ -17,7 +17,7 @@ export default function LoginPane() {
           <Button
             variant="primary"
             className="login-element login-card-element"
-            onClick={app.signIn!}
+            onClick={context.signIn!}
           >
             SSO Log In
           </Button>
