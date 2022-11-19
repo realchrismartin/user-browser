@@ -9,14 +9,9 @@ import React, {
 import AppUser from "../types/AppUser";
 import AppError from "../types/AppError";
 import { permissionConfig } from "../config/Config";
-import { getGroups, getLoginUser, getUserGroups, getUsers } from "../service/GraphService";
-import { AuthCodeMSALBrowserAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser";
-import { InteractionType, PublicClientApplication } from "@azure/msal-browser";
-import { useMsal } from "@azure/msal-react";
-import { loginConfig, graphConfig, apiConfig } from "../config/Config";
-import { InteractionRequiredAuthError } from "@azure/msal-browser";
-import { Group } from "microsoft-graph";
 import UserBrowserUser from "../types/UserBrowserUser";
+import UserBrowserGroup from "../types/UserBrowserGroup";
+import { authenticateUser } from "../service/APIService";
 
 //Update AppContext type to add more global functions/properties
 type AppContext = {
@@ -25,22 +20,17 @@ type AppContext = {
   hasAdminAccess?: Function,
   users?: UserBrowserUser[];
   shownUsers?: UserBrowserUser[];
-  groups?: Group[];
-  shownGroups?: Group[];
-  error?: AppError;
+  groups?: UserBrowserGroup[];
+  shownGroups?: UserBrowserGroup[];
   signIn?: MouseEventHandler<HTMLElement>;
   signOut?: MouseEventHandler<HTMLElement>;
   apiToken?: string;
+  error?: AppError;
   displayError?: Function;
   clearError?: Function;
   filterUsers?: Function;
   filterGroups?: Function;
   updateUser?: Function;
-  authProvider?: AuthCodeMSALBrowserAuthenticationProvider;
-};
-
-type ProvideAppContextProps = {
-  children: React.ReactNode;
 };
 
 const appContext = createContext<AppContext>({
@@ -57,32 +47,65 @@ const appContext = createContext<AppContext>({
   clearError: undefined,
   filterUsers: undefined,
   filterGroups: undefined,
-  authProvider: undefined,
 });
 
+//Context provider functions
 export function useAppContext(): AppContext {
   return useContext(appContext);
 }
 
+type ProvideAppContextProps = {
+  children: React.ReactNode;
+};
+
 export default function ProvideAppContext({
   children,
 }: ProvideAppContextProps) {
-  const auth = useProvideAppContext();
-  return <appContext.Provider value={auth}>{children}</appContext.Provider>;
+  const context = useProvideAppContext();
+  return <appContext.Provider value={context}>{children}</appContext.Provider>;
 }
 
 //AppContext function, add global functions here
 function useProvideAppContext() {
-  const msal = useMsal();
 
   const [user, setUser] = useState<AppUser | undefined>(undefined);
   const [error, setError] = useState<AppError | undefined>(undefined);
-  const [apiToken, setAPIAuthToken] = useState<string | undefined>(undefined);
-  const [users, setUsers] = useState<UserBrowserUser[] | undefined>(undefined);
-  const [shownUsers, setShownUsers] = useState<UserBrowserUser[] | undefined>(undefined);
-  const [groups, setGroups] = useState<Group[] | undefined>(undefined);
-  const [shownGroups, setShownGroups] = useState<Group[] | undefined>(undefined);
 
+  const [users, setUsers] = useState<UserBrowserUser[] | undefined>(undefined);
+  const [groups, setGroups] = useState<UserBrowserGroup[] | undefined>(undefined);
+
+  const [shownUsers, setShownUsers] = useState<UserBrowserUser[] | undefined>(undefined);
+  const [shownGroups, setShownGroups] = useState<UserBrowserGroup[] | undefined>(undefined);
+
+  //Set the user's auth state on context load
+  useEffect(() => {
+    const setUserAuthState = async () => {
+      if (!user) {
+        try {
+
+           let user = await authenticateUser();
+
+           if(!user) 
+           {
+            return;
+           }
+
+            setUser({
+              displayName: user.displayName || "",
+              email: user.email || "",
+              groups: user.groups || [],
+            });
+
+        } catch (err: any) {
+          displayError(err.message);
+        }
+      }
+    };
+
+    setUserAuthState();
+  });
+
+  //Functions for displaying errors
   const displayError = (message: string, debug?: string) => {
     setError({ message, debug });
   };
@@ -91,25 +114,30 @@ function useProvideAppContext() {
     setError(undefined);
   };
 
-  const authProvider = new AuthCodeMSALBrowserAuthenticationProvider(
-    msal.instance as PublicClientApplication,
-    {
-      account: msal.instance.getActiveAccount()!,
-      scopes: graphConfig.scopes,
-      interactionType: InteractionType.Popup,
-    }
-  );
-
   //Signin function
   const signIn = async () => {
-    await msal.instance.loginRedirect(loginConfig);
 
-    const user = await getLoginUser(authProvider);
+    //TODO: signin in the backend
+    //TODO: replace with actual user from backend
+
+    let user = {
+      displayName: "Fake Logged In User",
+      userPrincipalName: "Fake User",
+      mail: "fake@email.com",
+      groups: ["fakegroup"]
+    };
 
     setUser({
       displayName: user.displayName || "",
       email: user.mail || user.userPrincipalName || "",
     });
+  };
+
+  //Signout function
+  const signOut = async () => {
+    //TODO: sign out in the backend
+    console.log("TODO: sign out");
+    setUser(undefined);
   };
 
   //Filter function for users
@@ -137,13 +165,6 @@ function useProvideAppContext() {
       setShownGroups(groups);
     }
   };
-
-  //Function for updating individual user objects
-  //When an user is passed, assume the user is outdated in state
-  const updateUser = async (user: UserBrowserUser) => {
-    //TODO
-    console.log("AppContext: User is updated here")
-  }
 
   //Function which determines whether the current logged in user has write access
   const hasWriteAccess = (): boolean => {
@@ -183,110 +204,20 @@ function useProvideAppContext() {
     return false;
   }
 
-  //Signout function
-  const signOut = async () => {
-    await msal.instance.logoutRedirect();
-    setUser(undefined);
-  };
-
-  const getToken = async () => {
-    const account = msal.instance.getActiveAccount();
-
-    if (!account) {
-      return "";
-    }
-
-    const tokenRequest = {
-      scopes: apiConfig.scopes,
-      account: account,
-    };
-
-    try {
-      const response = await msal.instance.acquireTokenSilent({
-        ...tokenRequest,
-      });
-
-
-      return response.accessToken;
-    } catch (error) {
-      console.log(error);
-      if (InteractionRequiredAuthError.isInteractionRequiredError()) {
-        const response = await msal.instance.acquireTokenPopup(tokenRequest);
-        return response.accessToken;
-      }
-    }
-  };
-
-  //Ensures auth is reapplied on update
-  useEffect(() => {
-    const checkUser = async () => {
-      if (!user) {
-        try {
-          const account = msal.instance.getActiveAccount();
-
-          if (account) {
-            const user = await getLoginUser(authProvider);
-            const groups = await getUserGroups(authProvider, user.id!);
-
-
-            setUser({
-              displayName: user.displayName || "",
-              email: user.mail || user.userPrincipalName || "",
-              groups: groups || [],
-            });
-          }
-        } catch (err: any) {
-          displayError(err.message);
-        }
-      }
-    };
-
-    const getAPIToken = async () => {
-      if (!apiToken) {
-        let token = await getToken!();
-        setAPIAuthToken(token);
-      }
-    };
-
-    const loadInitialUsers = async () => {
-      if (user && !users) {
-        let users = await getUsers(100, authProvider); 
-        setUsers(users);
-        setShownUsers(users);
-      }
-    };
-
-    const loadGroups = async () => {
-      if (user && !groups) {
-        let groups = await getGroups(100, authProvider);
-        setGroups(groups);
-        setShownGroups(groups);
-      }
-    }
-
-    checkUser();
-    getAPIToken();
-    loadInitialUsers();
-    loadGroups();
-  });
-
   return {
     user,
-    hasWriteAccess,
-    hasAdminAccess,
     users,
     shownUsers,
     groups,
     shownGroups,
     error,
-    apiToken,
     signIn,
     signOut,
+    hasWriteAccess,
+    hasAdminAccess,
     displayError,
     clearError,
     filterUsers,
     filterGroups,
-    updateUser,
-    authProvider,
   };
 }

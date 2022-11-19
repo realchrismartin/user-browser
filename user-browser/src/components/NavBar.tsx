@@ -9,10 +9,7 @@ import {
 
 import logo from "../img/logo.png";
 
-import {
-  AuthenticatedTemplate,
-} from "@azure/msal-react";
-
+import { AuthenticatedSection} from "./AuthenticatedSection";
 import { useAppContext } from "../context/AppContext";
 
 export default function NavBar() {
@@ -29,18 +26,18 @@ export default function NavBar() {
         <Navbar.Toggle />
         <Navbar.Collapse>
         <Nav variant="pills" className="me-auto" navbar>
-          <AuthenticatedTemplate>
+          <AuthenticatedSection>
             <NavItem>
               <Nav.Link href="/">Users</Nav.Link>
             </NavItem>
             <NavItem>
               <Nav.Link href="/groups">Groups</Nav.Link>
             </NavItem>
-          </AuthenticatedTemplate>
+          </AuthenticatedSection>
         </Nav>
           <Nav className="me-auto" navbar></Nav>
           <Nav className="ms-auto align-items-center" navbar>
-            <AuthenticatedTemplate>
+            <AuthenticatedSection>
               <NavDropdown
                 title={user.displayName}
                 id="user-dropdown"
@@ -53,7 +50,7 @@ export default function NavBar() {
                 <Dropdown.Divider />
                 <Dropdown.Item onClick={app.signOut!}>Sign Out</Dropdown.Item>
               </NavDropdown>
-            </AuthenticatedTemplate>
+            </AuthenticatedSection>
           </Nav>
         </Navbar.Collapse>
       </Container>

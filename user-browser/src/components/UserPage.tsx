@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Accordion, Spinner, Container, Row, Col } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
-import UserBrowserUser, { lazyLoadUserPage } from "../types/UserBrowserUser";
+import UserBrowserUser from "../types/UserBrowserUser";
 import UserCard from "./UserCard";
 
 type UserPageProps = {
@@ -19,8 +19,6 @@ export default function UserPage(props: UserPageProps) {
     if (app.user && props.shownUsers.length > 0 && pageShown !== pageNumber) {
       let start = (pageNumber - 1) * props.pageSize;
       let users = props.shownUsers.slice(start, start + props.pageSize);
-      users = await lazyLoadUserPage(app.authProvider!,app.apiToken!,users);
-      //TODO: Perhaps save users after load (since may be changed) using app.updateUser? This might cause issues with data not refreshing.
       setPageUsers(users);
       setPageShown(pageNumber);
     }

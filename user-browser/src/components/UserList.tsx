@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col } from "react-bootstrap";
 
-import {
-  UnauthenticatedTemplate,
-  AuthenticatedTemplate,
-} from "@azure/msal-react";
+import { AuthenticatedSection } from "./AuthenticatedSection";
+import { UnauthenticatedSection } from "./UnauthenticatedSection";
+
 import UserPage from "./UserPage";
 import PageList from "./PageList";
 import InputForm from "./InputForm";
@@ -29,7 +28,6 @@ export default function UserList() {
   });
 
   async function applyFilter(filter: string) {
-    await setActivePage(0);
     app.filterUsers!(filter);
     setActivePage(1);
   }
@@ -40,8 +38,8 @@ export default function UserList() {
 
   return (
     <Container className="content">
-      <UnauthenticatedTemplate><LoginPane/></UnauthenticatedTemplate>
-      <AuthenticatedTemplate>
+      <UnauthenticatedSection><LoginPane/></UnauthenticatedSection>
+      <AuthenticatedSection>
         <Container>
           <Row>
             <InputForm
@@ -68,7 +66,7 @@ export default function UserList() {
             </Col>
           </Row>
         </Container>
-      </AuthenticatedTemplate>
+      </AuthenticatedSection>
     </Container>
   );
 }

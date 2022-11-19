@@ -31,8 +31,8 @@ export default function GroupCard(props: GroupCardProps) {
                   {props.group.members.map((user,index) => {
                     return (
                       <tr key={"user-row-" + index}>
-                        <td>{user.displayName}</td>
-                        <td>{user.mail}</td>
+                        <td>{user.firstName + " " + user.lastName}</td>
+                        <td>{user.email}</td>
                       </tr>
                     );
                   })}

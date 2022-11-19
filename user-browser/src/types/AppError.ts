@@ -1,3 +1,4 @@
+
 type AppError = {
   message: string;
   debug?: string;

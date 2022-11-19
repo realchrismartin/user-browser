@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col, Tab, Tabs } from "react-bootstrap";
 
-import {
-  UnauthenticatedTemplate,
-  AuthenticatedTemplate,
-} from "@azure/msal-react";
+import { AuthenticatedSection } from "./AuthenticatedSection";
+import { UnauthenticatedSection } from "./UnauthenticatedSection";
+
 import InputForm from "./InputForm";
 import GroupPage from "./GroupPage";
 import PageList from "./PageList";
@@ -38,20 +37,19 @@ export default function GroupList() {
   });
 
   async function applyFilter(filter: string) {
-    await setActivePage(0);
     app.filterGroups!(filter);
     setActivePage(1);
   }
 
   async function changeTab(tab : string) {
     if (tabToggled !== tab) {
-      await setActivePage(0);
       setTabToggled(tab);
       setActivePage(1);
     }
   }
 
   let shownGroups = app.shownGroups ? app.shownGroups.filter((group) => {
+    
     if (
       tabToggled === "securityGroups"
     ) {
@@ -66,8 +64,8 @@ export default function GroupList() {
 
   return (
     <Container className="content">
-      <UnauthenticatedTemplate><LoginPane/></UnauthenticatedTemplate>
-      <AuthenticatedTemplate>
+      <UnauthenticatedSection><LoginPane/></UnauthenticatedSection>
+      <AuthenticatedSection>
         <Container>
           <Row>
             <InputForm
@@ -110,7 +108,7 @@ export default function GroupList() {
             </Col>
           </Row>
         </Container>
-      </AuthenticatedTemplate>
+      </AuthenticatedSection>
     </Container>
   );
 }
