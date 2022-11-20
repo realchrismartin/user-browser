@@ -11,13 +11,14 @@ type AppContext = {
   appUser?: AppUser;
   hasWriteAccess?: Function,
   hasAdminAccess?: Function,
-  users?: UserBrowserUser[];
-  groups?: UserBrowserGroup[];
-  signIn?: MouseEventHandler<HTMLElement>;
-  signOut?: MouseEventHandler<HTMLElement>;
-  error?: AppError;
-  displayError?: Function;
-  clearError?: Function;
+  users?: UserBrowserUser[],
+  loadUsers?: Function,
+  groups?: UserBrowserGroup[],
+  signIn?: MouseEventHandler<HTMLElement>,
+  signOut?: MouseEventHandler<HTMLElement>,
+  error?: AppError,
+  displayError?: Function,
+  clearError?: Function
 };
 
 //Update AppContext type to add more global functions/properties

@@ -1,4 +1,4 @@
-import UserBrowserUser, { getUserFromJson } from "../types/UserBrowserUser";
+import UserBrowserUser, { getUsersFromJson } from "../types/UserBrowserUser";
 import AppUser from "../types/AppUser";
 import { apiConfig } from "../config/Config";
 import axios from "axios";
@@ -89,22 +89,27 @@ export async function completeSignIn() : Promise<AppUser | undefined> {
   }
 }
 
-//Get a specific database user the user's unique ID
-export async function getUser(userID: string, user: UserBrowserUser): Promise<UserBrowserUser | undefined> {
+//Get the next N users
+export async function getUsers(startIndex:number,count:number): Promise<UserBrowserUser[]|undefined>{
   try {
 
-    //TODO: update to send ID as a param
     let res = await axios.get(apiConfig.url + apiConfig.apiGetUsersRoute, {
+      params:{
+        startIndex:startIndex,
+        count:count
+      },
       withCredentials:true,
       method: "GET",
     });
 
-    return getUserFromJson(res); //Note: currently returns all users, will be broken
+  return getUsersFromJson(res.data);
 
   } catch (error: any) {
     console.log(error);
-    return;
   }
+
+  return [];
+
 }
 
 //Update a database user with the given id to set the specified user property and value

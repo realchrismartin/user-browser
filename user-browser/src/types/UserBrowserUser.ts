@@ -23,8 +23,8 @@ export type UserBrowserUser = {
 };
 
 //Transform the provided json into UB objects
-export function getUsersFromJson(res: any[]): UserBrowserUser[] {
-  return res.map((user) => {
+export function getUsersFromJson(data: any[]): UserBrowserUser[] {
+  return data.map((user) => {
     return getUserFromJson(user);
   });
 }
@@ -46,8 +46,8 @@ export function getUserFromJson(user: any): UserBrowserUser {
     mainContact: user["MainContact"],
     npiLocation: user["NPI1Location"],
     npi2Location: user["NPI2Location"],
-    securityGroups: user["SecurityGroups"],
-    mailGroups: user["MailGroups"]
+    securityGroups: user["SecurityGroups"] || [],
+    mailGroups: user["MailGroups"] || [],
   };
 }
 

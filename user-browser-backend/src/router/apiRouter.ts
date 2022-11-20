@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { getUsers } from "../util/dbUtils";
 import { hasAdminAccess, hasWriteAccess } from "../util/authUtils"
+import { start } from "repl";
 
 //Router for processing requests for user data
 //It's assumed that the user is already authenticated by upstream middleware/processes
@@ -9,14 +10,14 @@ import { hasAdminAccess, hasWriteAccess } from "../util/authUtils"
 const express = require("express");
 const router = express.Router();
 
-//Get a number of user records.
-//TODO: This endpoint needs to be paginated.
+//Get a number of user records equal to the count, starting from the start index
 router.get("/users", async (req: any, res: Response) => {
 
     //TODO: add error handling
-    //let users = await getUsers();
-    let users = [{user:"test"}];
+    let startIndex = req.query.startIndex;
+    let count = req.query.count;
 
+    let users = await getUsers(startIndex,count);
     res.send(users);
 });
 
