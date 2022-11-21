@@ -23,13 +23,20 @@ services:
             - "8080:8080"
         environment:
             NODE_APP_ENV: "production"
+            NODE_APP_SUB_SQL_HOSTNAME: sub-db
+            NODE_APP_SUB_POSTLOGIN_REDIRECT_URL: sub-app
             NODE_APP_SUB_FRONTEND_URL: "http://localhost"
-            NODE_APP_SUB_POSTLOGIN_REDIRECT_URL: "http://localhost"
             NODE_APP_SUB_BACKEND_URL: "http://localhost:8080"
             NODE_APP_SUB_IDP_LOGIN_URL: "https://somedomain/crowd/console/secure/saml/sso.action"
             NODE_APP_SUB_IDP_LOGOUT_URL: "https://somedomain/crowd/console/logoff.action"
-            NODE_APP_SUB_IDP_ISSUER: "some-entity-id-for-this-service-set-in-the-idp"
-            NODE_APP_SUB_IDP_CERT: "the-saml-signing-cert"
+            NODE_APP_SUB_CREATE_DATA: "yes"
+            NODE_APP_SUB_SQL_DATABASE: "tempdb"
+            NODE_APP_SUB_SQL_USERNAME: "sa"
+            NODE_APP_SUB_SQL_PASSWORD: "Welcome1234568910"
+            NODE_APP_SUB_SESSION_SECRET: "changeme"
+            NODE_APP_SUB_IDP_ISSUER: "changeme"
+            NODE_APP_SUB_IDP_CERT: "changeme"
+
     front:
         container_name: sub-app
         build:
@@ -41,6 +48,6 @@ services:
         ports: 
             - "80:80"
         environment:
-            REACT_APP_SUB_API_URL: "http://localhost:8080"
+            REACT_APP_SUB_API_URL: sub-api
             REACT_APP_SUB_ADMIN_SG_ID: "some-admin-security-group"
             REACT_APP_SUB_WRITE_SG_ID: "some-readwrite-security-group"

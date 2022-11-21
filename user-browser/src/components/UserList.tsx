@@ -22,7 +22,10 @@ export default function UserList() {
       }
     }
 
-    context.loadUsers!(); //Do the initial data load
+    if(!context.users || context.users.length <= 0)
+    {
+      context.loadUsers!(); //Do the initial data load
+    }
 
     setInitialPage();
   });

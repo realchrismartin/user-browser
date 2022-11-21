@@ -50,7 +50,6 @@ function useProvideAppContext() {
   const [error, setError] = useState<AppError | undefined>(undefined);
   const [appUser,setAppUser] = useState<AppUser | undefined>(undefined);
   const [users,setUsers] = useState<UserBrowserUser[] | undefined>(undefined);
-  const [fetchingData,setFetchingData] = useState<boolean>();
   const [groups,setGroups] = useState<UserBrowserGroup[] | undefined>(undefined);
 
   const loadUsers = async() => {
@@ -60,13 +59,6 @@ function useProvideAppContext() {
     let cursor = 0;
 
     let users : UserBrowserUser[] = [];
-
-    if(fetchingData)
-    {
-      return; //Ensure only one iteration of loadUsers is running at a time
-    }
-    
-    setFetchingData(true);
 
     while(cursor < count)
     {
@@ -86,7 +78,6 @@ function useProvideAppContext() {
     }
 
     setUsers(users); //TODO: waits for all users to set data. This will be impractical eventually.
-    setFetchingData(false);
   };
 
   //Function for displaying errors

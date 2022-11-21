@@ -7,6 +7,7 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+import { createSyntheticData } from "../util/dbUtils";
 
 function run() {
   const expressApp = express();
@@ -42,7 +43,16 @@ function run() {
 
   //Start the backend app
   expressApp.listen(config.port, () => {
+    
     console.log("user-browser backend live on " + config.port);
+
+      if(config.createSyntheticData)
+      {
+        createSyntheticData().then(dataCreated => {
+          console.log(">>> Loaded synthetic data");
+        })
+      }
+
   });
 }
 
