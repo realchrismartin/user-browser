@@ -17,12 +17,16 @@ async function createSyntheticData(): Promise<boolean> {
             .then((dbResult: IResult<any>) => {
               resolve(true);
             });
+          }).catch((err: Error) => {
+            //Query failed. Table exists
+            reject(err);
           });
       })
       .catch((err: Error) => {
+        //Actual connection error
         reject(err);
       });
-  });
+  })
 }
 
 async function getUsers(startIndex:number,count:number): Promise<UserBrowserUser[]> {

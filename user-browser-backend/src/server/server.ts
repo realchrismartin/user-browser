@@ -11,7 +11,7 @@ import { createSyntheticData } from "../util/dbUtils";
 
 function run() {
   const expressApp = express();
-
+  expressApp.set('trust proxy', 1); //Trust proxies
   expressApp.use(cors(config.cors));
   expressApp.use(cookieParser());
   expressApp.use(bodyParser.json());
@@ -41,17 +41,25 @@ function run() {
     apiRouter
   );
 
+  //Health check endpoint
+  expressApp.use("/",(req:any,res:any) =>
+  {
+    res.sendStatus(200);
+  });
+
   //Start the backend app
   expressApp.listen(config.port, () => {
     
     console.log("user-browser backend live on " + config.port);
 
-      if(config.createSyntheticData)
-      {
-        createSyntheticData().then(dataCreated => {
-          console.log(">>> Loaded synthetic data");
-        })
-      }
+    if(config.createSyntheticData)
+    {
+      createSyntheticData().then(dataCreated => {
+        console.log(">>> Loaded synthetic data");
+      }).catch((err : Error) => {
+        console.log(">>> Skipped loading synthetic data: ",err);
+      });
+    }
 
   });
 }

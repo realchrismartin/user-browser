@@ -20,19 +20,24 @@ const config = {
   },
 
   //Session configuration
+  //Cookie settings sameSite: none and secure:true are required in order for SSO to work properly in a non-localhost setting
   session: {
     resave: true,
     saveUninitialized: true,
-    secret: process.env.NODE_APP_SUB_SESSION_SECRET || "changeme"
+    secret: process.env.NODE_APP_SUB_SESSION_SECRET || "changeme",
+    cookie: {
+      maxAge: 24 * 60 * 60 * 2000,
+      sameSite: "none",
+      secure: true
+    }
   },
 
   //SQL Configuration
   sql: {
-    user: process.env.NODE_APP_SUB_SQL_USERNAME || "sa",
-    password: process.env.NODE_APP_SUB_SQL_PASSWORD || "changeme",
-    database: process.env.NODE_APP_SUB_SQL_DATABASE || "tempdb",
-    server: process.env.NODE_APP_SUB_SQL_HOSTNAME || "localhost",
-    
+    user: process.env.NODE_APP_SUB_SQL_USERNAME || "sa", //User used to log into database
+    password: process.env.NODE_APP_SUB_SQL_PASSWORD || "changeme", //Database user password
+    database: process.env.NODE_APP_SUB_SQL_DATABASE || "tempdb", //Database used for the app
+    server: process.env.NODE_APP_SUB_SQL_HOSTNAME || "localhost", //Hostname of the database. does NOT include a protocol or trailing slash.
     getUsersQuery: `select * from dbo.Users`,
 
     createTableQuery: `CREATE TABLE Users (
@@ -74,7 +79,8 @@ const config = {
       idleTimeoutMillis: 30000,
     },
     options: {
-      encrypt: false,
+      //Whether to encrypt the database traffic. Required for Azure PaaS databases.
+      encrypt: (process.env.NODE_APP_SUB_SQL_ENCRYPT || "").length > 0 ? true : false,
       trustServerCertificate: false,
     },
   },
@@ -90,6 +96,7 @@ const config = {
     strategy: 'saml',
     saml: {
       entryPoint: (process.env.NODE_APP_SUB_BACKEND_URL || "http://localhost:8080") + '/saml/loopback', 
+      protocol: (process.env.NODE_APP_SUB_BACKEND_URL || "http://localhost").indexOf("https") > -1 ? "https" : "http",
       issuer: process.env.NODE_APP_SUB_IDP_ISSUER || "sentinel-user-browser", 
       cert: process.env.NODE_APP_SUB_IDP_CERT || "dontputarealcerthere"
     }
