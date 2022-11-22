@@ -3,6 +3,7 @@ body {
   font-family: "Nunito Sans", sans-serif !important;
   font-size: 13px;
   background-color: #ecf0f9;;
+  padding-top:20vh;
 }
 
 .navbar {

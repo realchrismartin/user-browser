@@ -14,29 +14,21 @@ export default function App() {
   return (
       <ProvideAppContext>
         <Container>
-
-          <Container>
             <NavBar />
             <ErrorMessage />
-          </Container>
-
             <Container>
-              <UnauthenticatedSection>
-                <LoginPane/>
-              </UnauthenticatedSection>
+                <UnauthenticatedSection>
+                  <LoginPane/>
+                </UnauthenticatedSection>
+              <AuthenticatedSection>
+              <Router>
+                  <Routes>
+                  <Route path="/" element={<UserList />} ></Route>
+                  <Route path="/groups" element={<GroupList />} ></Route>
+                  </Routes>
+              </Router>
+              </AuthenticatedSection>
             </Container>
-
-          <Container>
-          <AuthenticatedSection>
-          <Router>
-              <Routes>
-              <Route path="/" element={<UserList />} ></Route>
-              <Route path="/groups" element={<GroupList />} ></Route>
-              </Routes>
-          </Router>
-          </AuthenticatedSection>
-          </Container>
-
         </Container>
       </ProvideAppContext>
   );
