@@ -33,7 +33,6 @@ export default function GroupList() {
   });
 
   async function applyFilter(filter: string) {
-    //app.filterGroups!(filter);
     //TODO: fix filtering
     setActivePage(1);
   }
@@ -45,17 +44,7 @@ export default function GroupList() {
     }
   }
 
-  let shownGroups = context.groups ? context.groups.filter((group:any) => {
-    
-    if (
-      tabToggled === "securityGroups"
-    ) {
-      return group.mail === null; 
-    }
-
-    return group.mail !== "";
-  }) : [];
-
+  let shownGroups = [];
   let currPage = activePage === undefined ? 1 : activePage;
   let numPages = shownGroups.length / pageSize;
 
@@ -86,7 +75,6 @@ export default function GroupList() {
           <Col xl="10">
             <Row>
               <GroupPage
-                shownGroups={shownGroups}
                 pageNumber={currPage}
                 pageSize={pageSize}
               />
