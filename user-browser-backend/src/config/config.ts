@@ -38,8 +38,10 @@ const config = {
     password: process.env.NODE_APP_SUB_SQL_PASSWORD || "changeme", //Database user password
     database: process.env.NODE_APP_SUB_SQL_DATABASE || "tempdb", //Database used for the app
     server: process.env.NODE_APP_SUB_SQL_HOSTNAME || "localhost", //Hostname of the database. does NOT include a protocol or trailing slash.
-    getUsersQuery: `select * from dbo.Users`,
-
+    getUsersNoFilterQuery: `SELECT * FROM dbo.Users ORDER BY UserId OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`,
+    getUsersQuery: `SELECT * FROM dbo.Users ORDER BY UserId OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`,
+    getUserNoFilterCountQuery: `SELECT COUNT(UserID) FROM Users as UserCount`,
+    getUserCountQuery: `SELECT COUNT(UserID) FROM Users as UserCount`,
     createTableQuery: `CREATE TABLE Users (
       UserID int,
       FirstName varchar(100),
