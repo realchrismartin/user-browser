@@ -27,8 +27,8 @@ const config = {
     secret: process.env.NODE_APP_SUB_SESSION_SECRET || "changeme",
     cookie: {
       maxAge: 24 * 60 * 60 * 2000,
-      sameSite: "none",
-      secure: true
+      sameSite: (process.env.NODE_APP_SUB_INSECURE_COOKIES) === 'false' ? "none" : "lax",
+      secure: (process.env.NODE_APP_SUB_INSECURE_COOKIES) === 'false' ? true : false
     }
   },
 
