@@ -8,6 +8,7 @@ import PermissionConfig from "../types/PermissionConfig";
 export const apiConfig = {
   url: process.env.REACT_APP_SUB_API_URL || "http://localhost:8080", //https://*.net address, no trailing slash
   apiGetUsersRoute: "/api/users",
+  apiGetUserCountRoute: "/api/users/count",
   apiUpdateUsersRoute: "/api/users",
   apiSignInRoute: "/saml/login",
   apiSignOutRoute: "/saml/logout",
