@@ -3,39 +3,56 @@ import { Accordion, Spinner, Container, Row, Col } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
 import UserBrowserUser from "../types/UserBrowserUser";
 import UserCard from "./UserCard";
+import { getUsers } from "../service/APIService";
+import UserFilter from "../types/UserFilter";
 
 type UserPageProps = {
-  shownUsers: UserBrowserUser[];
+  userFilter: UserFilter;
   pageNumber: number;
   pageSize: number;
 };
 
 export default function UserPage(props: UserPageProps) {
-  const context = useAppContext();
-  const [pageUsers, setPageUsers] = useState<UserBrowserUser[]>([]);
-  const [pageShown, setPageShown] = useState<number>(0);
 
-  async function loadPageData(pageNumber: number) {
-    if (context.appUser && props.shownUsers.length > 0 && pageShown !== pageNumber) {
-      let start = (pageNumber - 1) * props.pageSize;
-      let users = props.shownUsers.slice(start, start + props.pageSize);
+  const [pageUsers, setPageUsers] = useState<UserBrowserUser[]>([]);
+
+  const context = useAppContext();
+
+  async function loadPageData(filter: UserFilter,pageNumber: number, pageSize: number) {
+
+    //Get the users to display on this page
+    const users = await getUsers(filter,pageNumber,pageSize);
+
+    if(users)
+    {
       setPageUsers(users);
-      setPageShown(pageNumber);
+    } else {
+      context.displayError!("Failed to request this page's users :(");
     }
   }
 
   useEffect(() => {
-    loadPageData(props.pageNumber);
+    async function loadInitialPageData() {
+      if (pageUsers.length <= 0) {
+        loadPageData(props.userFilter,props.pageNumber, props.pageSize);
+
+        console.log("Loaded user page data. If this runs more than once in a row, something is wrong.");
+      }
+    }
+
+    //Load the page data when the page loads, if it's not loaded already.
+    //TODO: does this reload if the page # changes? It should.
+    loadInitialPageData();
   });
 
   let loading =
-    pageUsers.length <= 0 ? (
+    pageUsers?.length <= 0 ? (
       <Spinner animation="border" role="status">
         <span className="visually-hidden">Loading...</span>
       </Spinner>
     ) : (
       " "
-    ); //TODO
+    );
 
   return (
     <Container className="user-page" key={"page" + props.pageNumber}>

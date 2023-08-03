@@ -1,64 +1,53 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col } from "react-bootstrap";
-import { UserBrowserUser } from "../types/UserBrowserUser";
 
 import UserPage from "./UserPage";
 import PageList from "./PageList";
 import InputForm from "./InputForm";
+import UserFilter from "../types/UserFilter";
+import { getUserCount } from "../service/APIService";
 
 export default function UserList() {
-  const context = useAppContext();
   const pageSize = 10;
   const pagesPerScreen = 5;
 
   const [activePage, setActivePage] = useState<number>();
-  const [filter, setFilter] = useState<string>();
+  const [userCount,setUserCount] = useState<number>(0);
+  const [userFilter,setUserFilter] = useState<UserFilter>({});
 
   useEffect(() => {
-    async function setInitialPage() {
+    //Set an initial user filter that has no criteria and then apply it.
+    //This will also set the user count and active page.
+    //This depends on activePage being undefined initially.
+
+    async function setInitialFilter() {
       if (!activePage) {
-        setActivePage(1);
+        await applyFilter("");
       }
     }
 
-    if(!context.users || context.users.length <= 0)
-    {
-      context.loadUsers!(); //Do the initial data load
-    }
-
-    setInitialPage();
+    setInitialFilter();
   });
 
-  //TODO: this could be faster and also doesn't work properly
-  function filteredUsers(filter:string):UserBrowserUser[] {
+  const applyFilter = async(filter:string) => {
+    //Set the filter that was requested.
+    //TODO: specify an actual UserFilter object here based on the input, not an empty one.
+    let userFilter : UserFilter = {};
+    setUserFilter(userFilter);
 
-    let unfilteredUsers = context.users !== undefined ? context.users : [];
-    let filteredUsers : UserBrowserUser[] = [];
+    //Look up the new user count with the filter applied and save it.
+    const count = await getUserCount(userFilter);
+    setUserCount(count);
 
-    for(let user of unfilteredUsers)
-    {
-
-      let concatenatedUserData = (user.firstName || "") + (user.lastName ||"") + (user.email ||""); //TODO
-
-      if(filter === "" || concatenatedUserData.includes(filter))
-      {
-        filteredUsers.push(user);
-      }
-    }
-
-    return filteredUsers;
-  }
-
-  async function applyFilter(filter: string) {
-    setFilter(filter);
+    //Set the active page back to page 1.
     setActivePage(1);
   }
 
-  let shownUsers = filteredUsers(filter !== undefined ? filter : "");
   let currPage = activePage === undefined ? 1 : activePage;
-  let numPages = shownUsers.length / pageSize;
+  let numPages = userCount === undefined ? 1 : userCount / pageSize;
 
+  //TODO: update input form to allow for full specification of a filter.
   return (
     <Container className="content">
         <Row>
@@ -73,7 +62,7 @@ export default function UserList() {
         <Row className="justify-content-md-center">
           <Col xl="10">
             <Row>
-              <UserPage shownUsers={shownUsers} pageNumber={currPage} pageSize={pageSize} />
+              <UserPage userFilter={userFilter} pageNumber={currPage} pageSize={pageSize} />
             </Row>
             <Row className="justify-content-md-center">
               <PageList
