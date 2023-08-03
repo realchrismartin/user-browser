@@ -14,11 +14,14 @@ type UserPageProps = {
 
 export default function UserPage(props: UserPageProps) {
 
+  const [loadedPage, setLoadedPage] = useState<number>(-1);
   const [pageUsers, setPageUsers] = useState<UserBrowserUser[]>([]);
 
   const context = useAppContext();
 
   async function loadPageData(filter: UserFilter,pageNumber: number, pageSize: number) {
+
+    setPageUsers([]);
 
     //Get the users to display on this page
     const users = await getUsers(filter,pageNumber,pageSize);
@@ -32,17 +35,11 @@ export default function UserPage(props: UserPageProps) {
   }
 
   useEffect(() => {
-    async function loadInitialPageData() {
-      if (pageUsers.length <= 0) {
-        loadPageData(props.userFilter,props.pageNumber, props.pageSize);
-
-        console.log("Loaded user page data. If this runs more than once in a row, something is wrong.");
-      }
+    //Load the page data when the page loads and/or the page number changes
+    if (loadedPage != props.pageNumber) {
+      loadPageData(props.userFilter,props.pageNumber,props.pageSize);
+      setLoadedPage(props.pageNumber);
     }
-
-    //Load the page data when the page loads, if it's not loaded already.
-    //TODO: does this reload if the page # changes? It should.
-    loadInitialPageData();
   });
 
   let loading =

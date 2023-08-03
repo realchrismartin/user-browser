@@ -9,8 +9,8 @@ type PageListProps = {
 
 export default function PageList(props: PageListProps) {
   let pages = [];
-  let screenStart = Math.floor(props.currPage - props.pagesPerScreen) + 1;
-  screenStart = screenStart > 1 ? screenStart : 1;
+  let screenStart = Math.floor(props.currPage - props.pagesPerScreen);
+  screenStart = screenStart > 0 ? screenStart : 0;
 
   if (props.numPages > 1) {
     pages.push(
