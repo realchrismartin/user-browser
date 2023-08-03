@@ -103,8 +103,7 @@ export async function getUserCount(filter:UserFilter): Promise<number>
       method: "GET",
     });
 
-  console.log("TODO: Need to implement getUserCount!");
-  return 0; //TODO: will always be 0! need to return actual result.
+    return res.data.count; 
 
   } catch (error: any) {
     console.log(error);
@@ -120,7 +119,7 @@ export async function getUsers(filter:UserFilter, pageNumber:number,usersPerPage
     let res = await axios.get(apiConfig.url + apiConfig.apiGetUsersRoute, {
       params:{
         ...filterToQueryParams(filter),
-        startIndex:pageNumber * usersPerPage, //TODO: correct?
+        startIndex:pageNumber * usersPerPage,
         count:usersPerPage,
       },
       withCredentials:true,
