@@ -1,5 +1,6 @@
 import UserBrowserUser, { getUsersFromJson } from "../types/UserBrowserUser";
 import AppUser from "../types/AppUser";
+import UserFilter, { filterToQueryParams } from "../types/UserFilter";
 import { apiConfig } from "../config/Config";
 import axios from "axios";
 
@@ -89,14 +90,38 @@ export async function completeSignIn() : Promise<AppUser | undefined> {
   }
 }
 
-//Get the next N users
-export async function getUsers(startIndex:number,count:number): Promise<UserBrowserUser[]|undefined>{
+//Get the number of users in the SUB that match the filter
+export async function getUserCount(filter:UserFilter): Promise<number>
+{
+  try {
+
+    let res = await axios.get(apiConfig.url + apiConfig.apiGetUserCountRoute, {
+      params:{
+        ...filterToQueryParams(filter)
+      },
+      withCredentials:true,
+      method: "GET",
+    });
+
+  console.log("TODO: Need to implement getUserCount!");
+  return 0; //TODO: will always be 0! need to return actual result.
+
+  } catch (error: any) {
+    console.log(error);
+  }
+
+  return 0;
+}
+
+//Get the next N users that meet the filter criteria
+export async function getUsers(filter:UserFilter, pageNumber:number,usersPerPage:number): Promise<UserBrowserUser[]|undefined>{
   try {
 
     let res = await axios.get(apiConfig.url + apiConfig.apiGetUsersRoute, {
       params:{
-        startIndex:startIndex,
-        count:count
+        ...filterToQueryParams(filter),
+        startIndex:pageNumber * usersPerPage, //TODO: correct?
+        count:usersPerPage,
       },
       withCredentials:true,
       method: "GET",
