@@ -38,42 +38,6 @@ const config = {
     password: process.env.NODE_APP_SUB_SQL_PASSWORD || "changeme", //Database user password
     database: process.env.NODE_APP_SUB_SQL_DATABASE || "tempdb", //Database used for the app
     server: process.env.NODE_APP_SUB_SQL_HOSTNAME || "localhost", //Hostname of the database. does NOT include a protocol or trailing slash.
-    getUsersNoFilterQuery: `SELECT * FROM dbo.Users ORDER BY UserId OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`,
-    getUsersQuery: `SELECT * FROM dbo.Users ORDER BY UserId OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY`,
-    getUserNoFilterCountQuery: `SELECT COUNT(UserID) FROM Users as UserCount`,
-    getUserCountQuery: `SELECT COUNT(UserID) FROM Users as UserCount`,
-    createTableQuery: `CREATE TABLE Users (
-      UserID int,
-      FirstName varchar(100),
-      LastName varchar(100),
-      Degree varchar(100),
-      Company varchar(100),
-      Title varchar(50),
-      Email varchar(100),
-      Phone varchar(10),
-      FDACenter varchar(50),
-      FDADivision varchar(50),
-      PrincipalInvestigator bit,
-      MainContact varchar(50),
-      NPI1Location varchar(50),
-      HPHCLogin varchar(50));`,
-
-    createFakeDataQuery: `
-      INSERT INTO [dbo].[Users]([UserID],[FirstName],[LastName],[Degree],[Company],[Title],[Email],[Phone],[FDACenter] ,[FDADivision] ,[PrincipalInvestigator] ,[MainContact] ,[NPI1Location] ,[HPHCLogin])
-      VALUES
-      (1,'FirstName','LastName' ,'Degree','Company','Title','user1@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (2,'FirstName','LastName' ,'Degree','Company','Title','user2@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (3,'FirstName','LastName' ,'Degree','Company','Title','user3@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (4,'FirstName','LastName' ,'Degree','Company','Title','user4@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (5,'FirstName','LastName' ,'Degree','Company','Title','user5@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (6,'FirstName','LastName' ,'Degree','Company','Title','user6@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (7,'FirstName','LastName' ,'Degree','Company','Title','user7@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (8,'FirstName','LastName' ,'Degree','Company','Title','user8@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (9,'FirstName','LastName' ,'Degree','Company','Title','user9@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (10,'FirstName','LastName' ,'Degree','Company','Title','user10@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (11,'FirstName','LastName' ,'Degree','Company','Title','user11@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-      (12,'FirstName','LastName' ,'Degree','Company','Title','user12@email.com','1-1','Center','Division',0,'6' ,'6' ,'6')
-      `,
 
     pool: {
       max: 1, 
