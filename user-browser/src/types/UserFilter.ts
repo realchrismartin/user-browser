@@ -1,15 +1,52 @@
-type UserFilter= {
-  //TODO: add the filter properties that we will set based on the user form
+type UserFilter = {
+  FirstName: string,
+  LastName: string,
+  Degree: string,
+  Company: string,
+  Title: string,
+  Email: string,
+  Phone: string,
+  FDACenter: string,
+  FDADivision: string,
+  PrincipalInvestigator: string,
+  MainContact: string,
+  NPI1Location: string,
+  HPHCLogin: string
 };
 
-export function filterToQueryParams(filter : UserFilter): Object {
+export function getBlankUserFilter() : UserFilter {
 
-  //TODO: once properties are established, create an object that can be destructured into query params.
-  //It should have a series of key-value pairs with depth 1
   return {
-    "oneprop":"oneval",
-    "secondprop":"secondval"
-  };
+    FirstName:"",
+    LastName:"",
+    Degree:"",
+    Company:"",
+    Title:"",
+    Email:"",
+    Phone:"",
+    FDACenter:"",
+    FDADivision:"",
+    PrincipalInvestigator:"",
+    MainContact:"",
+    NPI1Location:"",
+    HPHCLogin:""
+  }
+}
+export function filterToQueryParams(userFilter : UserFilter): Object {
+
+  let values = {};
+  
+  //Unroll the userFilter into a series of values
+  for (const [k, v] of Object.entries(userFilter))
+  {
+    if(v !== undefined && v !== "")
+    {
+      values = {...values,[k]:v}; //Include the key-value property in the values
+    }
+  }
+
+  return values;
+
 }
 
 export default UserFilter;
