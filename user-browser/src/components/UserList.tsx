@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
-import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col } from "react-bootstrap";
 
 import UserPage from "./UserPage";
 import PageList from "./PageList";
 import InputForm from "./InputForm";
-import UserFilter from "../types/UserFilter";
+import UserFilter, { getBlankUserFilter } from "../types/UserFilter";
 import { getUserCount } from "../service/APIService";
 
 export default function UserList() {
@@ -14,7 +13,7 @@ export default function UserList() {
 
   const [activePage, setActivePage] = useState<number>(-1);
   const [userCount,setUserCount] = useState<number>(0);
-  const [userFilter,setUserFilter] = useState<UserFilter>({});
+  const [userFilter,setUserFilter] = useState<UserFilter>(getBlankUserFilter());
 
   useEffect(() => {
     //Set an initial user filter that has no criteria and then apply it.
@@ -28,8 +27,12 @@ export default function UserList() {
 
   const applyFilter = async(filter:string) => {
     //Set the filter that was requested.
-    //TODO: specify an actual UserFilter object here based on the input, not an empty one.
-    let userFilter : UserFilter = {};
+
+    //TODO: for now, just set the filter provided as the email
+    //Later set more than one property.
+    let userFilter = getBlankUserFilter();
+    userFilter.Email = filter;
+
     setUserFilter(userFilter);
 
     //Set the active page to the first page, page 0.
@@ -62,7 +65,7 @@ export default function UserList() {
         <Row className="justify-content-md-center">
           <Col xl="10">
             <Row>
-              {activePage === undefined ? (<div></div>) : (<UserPage userFilter={userFilter} pageNumber={currPage} pageSize={pageSize} />)}
+              {activePage === -1 ? (<div></div>) : (<UserPage userFilter={userFilter} pageNumber={currPage} pageSize={pageSize} />)}
             </Row>
             <Row className="justify-content-md-center">
               <PageList

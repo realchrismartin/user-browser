@@ -4,7 +4,7 @@ import { useAppContext } from "../context/AppContext";
 import UserBrowserUser from "../types/UserBrowserUser";
 import UserCard from "./UserCard";
 import { getUsers } from "../service/APIService";
-import UserFilter from "../types/UserFilter";
+import UserFilter, { getBlankUserFilter } from "../types/UserFilter";
 
 type UserPageProps = {
   userFilter: UserFilter;
@@ -14,7 +14,9 @@ type UserPageProps = {
 
 export default function UserPage(props: UserPageProps) {
 
-  const [loadedPage, setLoadedPage] = useState<number>(-1);
+
+  const [pageNumber, setPageNumber] = useState<number>(-1);
+  const [userFilter, setUserFilter] = useState<UserFilter | undefined>();
   const [pageUsers, setPageUsers] = useState<UserBrowserUser[]>([]);
 
   const context = useAppContext();
@@ -35,10 +37,11 @@ export default function UserPage(props: UserPageProps) {
   }
 
   useEffect(() => {
-    //Load the page data when the page loads and/or the page number changes
-    if (loadedPage != props.pageNumber) {
+    //Load the page data again if the user filter is undefined, changes, or the page number changes
+    if (props.pageNumber !== pageNumber || userFilter === undefined || props.userFilter != userFilter) {
       loadPageData(props.userFilter,props.pageNumber,props.pageSize);
-      setLoadedPage(props.pageNumber);
+      setUserFilter(props.userFilter);
+      setPageNumber(props.pageNumber);
     }
   });
 
