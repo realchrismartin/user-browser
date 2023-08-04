@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Accordion, Spinner, Container, Row, Col } from "react-bootstrap";
+import { Accordion, Container, Row } from "react-bootstrap";
 import { useAppContext } from "../context/AppContext";
 import UserBrowserUser from "../types/UserBrowserUser";
 import UserCard from "./UserCard";
 import { getUsers } from "../service/APIService";
-import UserFilter, { getBlankUserFilter } from "../types/UserFilter";
+import UserFilter from "../types/UserFilter";
+import LoadingSpinner from "./LoadingSpinner";
+import FailedToLoadCard from "./FailedToLoadCard";
 
 type UserPageProps = {
   userFilter: UserFilter;
@@ -14,7 +16,7 @@ type UserPageProps = {
 
 export default function UserPage(props: UserPageProps) {
 
-
+  const [pageLoading, setPageLoading] = useState<boolean>(true);
   const [pageNumber, setPageNumber] = useState<number>(-1);
   const [userFilter, setUserFilter] = useState<UserFilter | undefined>();
   const [pageUsers, setPageUsers] = useState<UserBrowserUser[]>([]);
@@ -23,6 +25,7 @@ export default function UserPage(props: UserPageProps) {
 
   async function loadPageData(filter: UserFilter,pageNumber: number, pageSize: number) {
 
+    setPageLoading(true);
     setPageUsers([]);
 
     //Get the users to display on this page
@@ -32,8 +35,12 @@ export default function UserPage(props: UserPageProps) {
     {
       setPageUsers(users);
     } else {
+      //Doesn't work?
       context.displayError!("Failed to request this page's users :(");
     }
+    
+    //TODO: right now, doesnt have a good visual semaphore if this fails.
+    setPageLoading(false);
   }
 
   useEffect(() => {
@@ -45,24 +52,12 @@ export default function UserPage(props: UserPageProps) {
     }
   });
 
-  let loading =
-    pageUsers?.length <= 0 ? (
-      <Spinner animation="border" role="status">
-        <span className="visually-hidden">Loading...</span>
-      </Spinner>
-    ) : (
-      " "
-    );
-
   return (
     <Container className="user-page" key={"page" + props.pageNumber}>
-      <Row className="loading-spinner justify-content-md-center">
-        <Col />
-        <Col md="1">{loading}</Col>
-        <Col />
-      </Row>
       <Row>
         <Accordion>
+          {pageLoading ? <LoadingSpinner/> : <span></span>}
+          {!pageLoading && pageUsers.length <= 0 ? <FailedToLoadCard/> : (<span></span>)}
           {pageUsers.map((user, index) => {
             return <UserCard user={user} index={index} key={index} />;
           })}

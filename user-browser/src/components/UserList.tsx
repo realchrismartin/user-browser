@@ -3,9 +3,9 @@ import { Container, Row, Col } from "react-bootstrap";
 
 import UserPage from "./UserPage";
 import PageList from "./PageList";
-import InputForm from "./InputForm";
 import UserFilter, { getBlankUserFilter } from "../types/UserFilter";
 import { getUserCount } from "../service/APIService";
+import UserFilterForm from "./UserFilterForm";
 
 export default function UserList() {
   const pageSize = 10;
@@ -32,6 +32,7 @@ export default function UserList() {
     //Later set more than one property.
     let userFilter = getBlankUserFilter();
     userFilter.Email = filter;
+    userFilter.LastName = "Last";
 
     setUserFilter(userFilter);
 
@@ -53,15 +54,9 @@ export default function UserList() {
   //TODO: update input form to allow for full specification of a filter.
   return (
     <Container className="content">
-        <Row>
-          <InputForm
-            applyChange={applyFilter}
-            formLabel={"Search Users"}
-            formDefaultValue={""}
-            formPlaceholderText={"Enter search term"}
-            showIcon={true}
-          />
-        </Row>
+        <UserFilterForm
+          applyFilterFunction={applyFilter}
+        />
         <Row className="justify-content-md-center">
           <Col xl="10">
             <Row>
