@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { getUsers, getUsersCount } from "../util/dbUtils";
 import { hasAdminAccess, hasWriteAccess } from "../util/authUtils"
-import {queryParamsToFilter} from "../types/UserFilter"
+import {queryParamsToFilter} from "../util/userFilterUtils"
 
 //Router for processing requests for user data
 //It's assumed that the user is already authenticated by upstream middleware/processes
