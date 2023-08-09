@@ -163,7 +163,7 @@ async function createSyntheticData(): Promise<boolean> {
         Company varchar(100),
         Title varchar(50),
         Email varchar(100),
-        Phone varchar(10),
+        Phone varchar(12),
         FDACenter varchar(50),
         FDADivision varchar(50),
         PrincipalInvestigator bit,
@@ -176,18 +176,18 @@ async function createSyntheticData(): Promise<boolean> {
           const insertDataQuery = `
             INSERT INTO [dbo].[Users]([UserID],[FirstName],[LastName],[Degree],[Company],[Title],[Email],[Phone],[FDACenter] ,[FDADivision] ,[PrincipalInvestigator] ,[MainContact] ,[NPI1Location] ,[HPHCLogin])
             VALUES
-            (1,'FirstName','LastName' ,'Degree','Company','Title','user1@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (2,'FirstName','LastName' ,'Degree','Company','Title','user2@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (3,'FirstName','LastName' ,'Degree','Company','Title','user3@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (4,'FirstName','LastName' ,'Degree','Company','Title','user4@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (5,'FirstName','LastName' ,'Degree','Company','Title','user5@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (6,'FirstName','LastName' ,'Degree','Company','Title','user6@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (7,'FirstName','LastName' ,'Degree','Company','Title','user7@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (8,'FirstName','LastName' ,'Degree','Company','Title','user8@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (9,'FirstName','LastName' ,'Degree','Company','Title','user9@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (10,'FirstName','LastName' ,'Degree','Company','Title','user10@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (11,'FirstName','LastName' ,'Degree','Company','Title','user11@email.com','1-1','Center','Division',0,'6' ,'6' ,'6'),
-            (12,'FirstName','LastName' ,'Degree','Company','Title','user12@email.com','1-1','Center','Division',0,'6' ,'6' ,'6')`;
+            (1,'Ulysses','Grant' ,'PhD','USA','President','ulysses.grant@email.com','800-999-9999','B','Operations',0,'6' ,'/test/' ,'ugrant'),
+            (2,'Lucretia','Garfield' ,'PhD','USA','First Lady','lucretia.garfield@email.com','800-888-7777','A','Sales',0,'6' ,'/test2/' ,'lgrant'),
+            (3,'Rosalyn','Carter' ,'Esq','USA','First Lady','rosalyn.carter@email.com','800-666-5555','C','Engineering',0,'6' ,'/test3/' ,'rcarter'),
+            (4,'Jimmy','Carter' ,'MS','USA','President','jimmy.carter@email.com','800-222-3333','D','Operations',0,'6' ,'/test4/' ,'jcarter'),
+            (5,'Grover','Cleveland' ,'PhD','USA','President','grover.cleveland@email.com','617-409-9999','A','Sales',0,'6' ,'/test5/' ,'gcleveland'),
+            (6,'William','Harrison' ,'Esq','USA','President','william.harrison@email.com','123-345-4566','B','Engineering',0,'6' ,'/test6/' ,'wharrison'),
+            (7,'Rose','Cleveland' ,'MS','USA','First Lady','rose.cleveland@email.com','123-234-3445','C','Operations',0,'6' ,'/test7/' ,'rcleveland'),
+            (8,'Martha','Washington' ,'MFA','USA','First Lady','martha.washington@email.com','232-455-6643','D','Sales',0,'6' ,'/test8/' ,'mwashington'),
+            (9,'Sarah','Jackson' ,'Esq','USA','First Lady','sarah.jackson@email.com','234-233-4444','A','Engineering',0,'6' ,'/test9/' ,'sjackson'),
+            (10,'Letitia','Tyler' ,'PhD','USA','First Lady','letitia.tyler@email.com','999-999-9999','B','Operations',0,'6' ,'/test10/' ,'ltyler'),
+            (11,'Jane','Harrison' ,'MFA','USA','First Lady','jane.harrison@email.com','123-234-2342','C','Sales',0,'6' ,'/test11/' ,'jharrison'),
+            (12,'John','Tyler' ,'MFA','USA','President','john.tyler@email.com','989-232-1223','D','Engineering',0,'6' ,'/test12/' ,'jtyler')`;
 
             connectionPool.query(insertDataQuery).then((dbResult: IResult<any>) => {
                 resolve(true);
