@@ -21,6 +21,12 @@ body {
   padding-top: 4vh;
 }
 
+.user-filter-form
+{
+  padding-bottom: 2vh;
+  align-content: center;
+}
+
 .loading-spinner {
   padding-top:1vh;
   padding-bottom:1vh;
