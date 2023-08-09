@@ -114,6 +114,7 @@ export async function getUserCount(filter:UserFilter): Promise<number>
 
 //Get the next N users that meet the filter criteria
 export async function getUsers(filter:UserFilter, pageNumber:number,usersPerPage:number): Promise<UserBrowserUser[]|undefined>{
+
   try {
 
     let res = await axios.get(apiConfig.url + apiConfig.apiGetUsersRoute, {
@@ -132,7 +133,7 @@ export async function getUsers(filter:UserFilter, pageNumber:number,usersPerPage
     console.log(error);
   }
 
-  return [];
+  return undefined;
 
 }
 
