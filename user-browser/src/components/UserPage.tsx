@@ -31,21 +31,21 @@ export default function UserPage(props: UserPageProps) {
     //Get the users to display on this page
     const users = await getUsers(filter,pageNumber,pageSize);
 
-    if(users)
+    setPageLoading(false);
+
+    //TODO: right now, doesnt have a good visual semaphore if this fails.
+    if(users !== undefined)
     {
       setPageUsers(users);
-    } else {
-      //Doesn't work?
-      context.displayError!("Failed to request this page's users :(");
+      return;
     }
-    
-    //TODO: right now, doesnt have a good visual semaphore if this fails.
-    setPageLoading(false);
+
+    context.displayError!("Failed to request this page's users :(");
   }
 
   useEffect(() => {
     //Load the page data again if the user filter is undefined, changes, or the page number changes
-    if (props.pageNumber !== pageNumber || userFilter === undefined || props.userFilter != userFilter) {
+    if (props.pageNumber !== pageNumber || userFilter === undefined || props.userFilter !== userFilter) {
       loadPageData(props.userFilter,props.pageNumber,props.pageSize);
       setUserFilter(props.userFilter);
       setPageNumber(props.pageNumber);

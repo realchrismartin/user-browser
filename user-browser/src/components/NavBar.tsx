@@ -17,7 +17,7 @@ export default function NavBar() {
   const user = context.appUser || { displayName: "", email: "" };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="md" fixed="top">
+    <Navbar bg="dark" variant="dark" expand="md">
       <Container>
         <img className="logo" src={logo} alt="Sentinel User Browser" />
         <Navbar.Brand className="app-title" href="/">
