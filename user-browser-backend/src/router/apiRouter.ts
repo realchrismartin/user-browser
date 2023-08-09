@@ -19,6 +19,13 @@ router.get("/users", async (req: any, res: Response) => {
     if(!startIndex || !count)
     {
         res.status(400).send("Missing startIndex or count parameters");
+        return;
+    }
+
+    if(startIndex < 0 || count < 0)
+    {
+        res.status(400).send("startIndex and count parameters cannot be negative");
+        return;
     }
 
     let users = await getUsers(queryParamsToFilter(req.query),startIndex,count);

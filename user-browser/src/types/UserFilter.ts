@@ -32,6 +32,7 @@ export function getBlankUserFilter() : UserFilter {
     HPHCLogin:""
   }
 }
+
 export function filterToQueryParams(userFilter : UserFilter): Object {
 
   let values = {};

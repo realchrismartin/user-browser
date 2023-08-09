@@ -91,7 +91,7 @@ export async function completeSignIn() : Promise<AppUser | undefined> {
 }
 
 //Get the number of users in the SUB that match the filter
-export async function getUserCount(filter:UserFilter): Promise<number>
+export async function getUserCount(filter:UserFilter): Promise<number | undefined>
 {
   try {
 
@@ -109,7 +109,7 @@ export async function getUserCount(filter:UserFilter): Promise<number>
     console.log(error);
   }
 
-  return 0;
+  return undefined;
 }
 
 //Get the next N users that meet the filter criteria
