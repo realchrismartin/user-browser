@@ -33,7 +33,8 @@ export default function EditableProperty(props: EditablePropertyProps) {
     setIsBeingEdited(true);
   }
 
-  async function handleSaveChanges(newValue: string) {
+  async function handleSaveChanges(formLabel: string, newValue: string) {
+    //NB: does not use form label currently
     if (newValue === props.value) {
       setIsBeingEdited(false);
       return;

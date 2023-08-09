@@ -23,9 +23,7 @@ export default function InputForm(props: InputFormProps) {
       variant="primary"
       type="button"
       onClick={(e) => {
-        props.applyChange(
-          inputFormRef.current ? inputFormRef.current.value : ""
-        );
+        props.applyChange(props.formLabel, inputFormRef.current ? inputFormRef.current.value : "");
       }}
     >
       {" "}
@@ -43,9 +41,7 @@ export default function InputForm(props: InputFormProps) {
                 <Form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    props.applyChange(
-                      inputFormRef.current ? inputFormRef.current.value : ""
-                    );
+                    props.applyChange(props.formLabel, inputFormRef.current ? inputFormRef.current.value : "");
                   }}
                 >
                   <Form.Control

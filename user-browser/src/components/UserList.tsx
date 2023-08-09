@@ -6,68 +6,71 @@ import PageList from "./PageList";
 import UserFilter, { getBlankUserFilter } from "../types/UserFilter";
 import { getUserCount } from "../service/APIService";
 import UserFilterForm from "./UserFilterForm";
+import { useAppContext } from "../context/AppContext";
 
 export default function UserList() {
-  const pageSize = 10;
+
+  const pageSize = 10; //Must be > 0
   const pagesPerScreen = 5;
 
-  const [activePage, setActivePage] = useState<number>(-1);
+  const context = useAppContext();
+
+  const [listPageLoaded, setListPageLoaded] = useState<boolean>(false);
+  const [activePage, setActivePage] = useState<number>(0);
   const [userCount,setUserCount] = useState<number>(0);
   const [userFilter,setUserFilter] = useState<UserFilter>(getBlankUserFilter());
 
-  useEffect(() => {
-    //Set an initial user filter that has no criteria and then apply it.
-    //This will also set the user count and active page.
-    if(activePage === -1)
-    {
-      applyFilter("");
-    }
-
-  });
-
-  const applyFilter = async(filter:string) => {
-    //Set the filter that was requested.
-
-    //TODO: for now, just set the filter provided as the email
-    //Later set more than one property.
-    let userFilter = getBlankUserFilter();
-    userFilter.Email = filter;
-    userFilter.LastName = "Last";
-
-    setUserFilter(userFilter);
-
-    //Set the active page to the first page, page 0.
-    setActivePage(0);
+  const applyUserFilter = async(filter:UserFilter) => {
 
     //Look up the new user count with the filter applied and save it.
-    const count = await getUserCount(userFilter);
+    const count = await getUserCount(filter);
+
+    if(count === undefined)
+    {
+      context.displayError!("Failed to get user counts :(");
+      return;
+    }
+
+    //Set the new count.
     setUserCount(count);
 
-    console.log("This many users match the filter overall:" + count);
+    //Set the filter that was requested.
+    //This HAS to be a different object than the original, so we recreate it here
+    //This is due to referential equality - otherwise the underlying page won't update because the object is the "same"
+    setUserFilter({...filter});
+    
+    //Set the active page to the first page, page 0.
+    setActivePage(0);
   }
 
-  let currPage = activePage === undefined ? 0 : activePage;
-  let numPages = userCount === undefined ? 1 : Math.ceil(userCount * 1.0 / pageSize);
+  useEffect(() => {
 
-  console.log("Showing this many pages: " + numPages);
+    if(!listPageLoaded)
+    {
+      //On first load:
+      //Set an initial user filter that has no criteria and then apply it.
+      //This will also set the user count and active page.
+      applyUserFilter(getBlankUserFilter());
+      setListPageLoaded(true);
+    }
 
-  //TODO: update input form to allow for full specification of a filter.
+  },[listPageLoaded,applyUserFilter]);
+
+
   return (
     <Container className="content">
-        <UserFilterForm
-          applyFilterFunction={applyFilter}
-        />
+        <UserFilterForm applyUserFilterFunction={applyUserFilter} />
         <Row className="justify-content-md-center">
           <Col xl="10">
             <Row>
-              {activePage === -1 ? (<div></div>) : (<UserPage userFilter={userFilter} pageNumber={currPage} pageSize={pageSize} />)}
+              <UserPage userFilter={userFilter} pageNumber={activePage} pageSize={pageSize} />
             </Row>
             <Row className="justify-content-md-center">
               <PageList
                 setActivePage={setActivePage}
                 pagesPerScreen={pagesPerScreen}
-                numPages={numPages}
-                currPage={currPage}
+                numPages={Math.ceil(userCount * 1.0 / pageSize)}
+                currPage={activePage}
               />
             </Row>
           </Col>

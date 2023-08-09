@@ -17,40 +17,33 @@ type UserPageProps = {
 export default function UserPage(props: UserPageProps) {
 
   const [pageLoading, setPageLoading] = useState<boolean>(true);
-  const [pageNumber, setPageNumber] = useState<number>(-1);
-  const [userFilter, setUserFilter] = useState<UserFilter | undefined>();
   const [pageUsers, setPageUsers] = useState<UserBrowserUser[]>([]);
 
   const context = useAppContext();
 
-  async function loadPageData(filter: UserFilter,pageNumber: number, pageSize: number) {
-
-    setPageLoading(true);
-    setPageUsers([]);
-
-    //Get the users to display on this page
-    const users = await getUsers(filter,pageNumber,pageSize);
-
-    setPageLoading(false);
-
-    //TODO: right now, doesnt have a good visual semaphore if this fails.
-    if(users !== undefined)
-    {
-      setPageUsers(users);
-      return;
-    }
-
-    context.displayError!("Failed to request this page's users :(");
-  }
-
   useEffect(() => {
-    //Load the page data again if the user filter is undefined, changes, or the page number changes
-    if (props.pageNumber !== pageNumber || userFilter === undefined || props.userFilter !== userFilter) {
-      loadPageData(props.userFilter,props.pageNumber,props.pageSize);
-      setUserFilter(props.userFilter);
-      setPageNumber(props.pageNumber);
-    }
-  });
+    
+    const loadUserData = async() => {
+
+      //Get the users to display on this page
+      const users = await getUsers(props.userFilter,props.pageNumber,props.pageSize);
+
+      setPageLoading(false);
+
+      if(users !== undefined)
+      {
+        setPageUsers(users);
+        return;
+      }
+
+      context.displayError!("Failed to request this page's users :(");
+    };
+
+    loadUserData();
+
+  //Dependency array ensures that useEffect only runs when these properties are updated in props.
+  //NB: We recreate userFilter as a "new" object upstream every time we change it so that this will work.
+  },[context,props.userFilter,props.pageNumber,props.pageSize]);
 
   return (
     <Container className="user-page" key={"page" + props.pageNumber}>
