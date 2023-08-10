@@ -21,13 +21,25 @@ body {
   padding-top: 4vh;
 }
 
+.user-filter-accordion
+{
+  background-image: linear-gradient(#0d2649,#104066);
+  min-height: 1vh;
+}
+
 .user-filter-form
 {
   padding-bottom: 2vh;
-  align-content: center;
+  max-width: 10vw;
 }
 
-.loading-spinner {
+.input-form
+{
+  padding:0.25vh;
+}
+
+.loading-spinner 
+{
   padding-top:1vh;
   padding-bottom:1vh;
 }
