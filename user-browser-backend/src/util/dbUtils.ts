@@ -18,17 +18,11 @@ async function getUsersCount(userFilter: UserFilter): Promise<number> {
         //Build a query based on the filter
         buildQueryForFilter(userFilter,"SELECT COUNT(UserID) FROM Users as UserCount").then((query : string) => {
 
-          //Print the query to the log
-          console.log(query);
-
           //Prepare the statement using the query
           statement.prepare(query).then(() => {
 
             //Get the values for the prepared statement based on the filter
             getPreparedValuesForFilter(userFilter).then((preparedFilterValues: Object) => {
-
-              //Print the params to the log
-              debugPrintObject(preparedFilterValues);
 
               //Execute the PS
               statement.execute(preparedFilterValues).then((dbResult: IResult<any>) => {
@@ -36,13 +30,14 @@ async function getUsersCount(userFilter: UserFilter): Promise<number> {
                 //Teardown!
                 statement.unprepare().then(() => {
 
+                  //Assumes the result is of a COUNT query.
                   const count = dbResult.recordset[0][""]
 
                   if(count == undefined)
                   {
                     reject("Something is wrong with this result!");
                   } else {
-                    resolve(count); //Assumes the result is of a COUNT query.
+                    resolve(count); 
                   }
 
                 }).catch((err: any) => {
@@ -90,9 +85,6 @@ async function getUsers(userFilter: UserFilter, startIndex: number, count: numbe
           //Add the offset and limit to the query
           query += " ORDER BY UserId OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY";
 
-          //Print the query to the log
-          console.log(query);
-
           //Prepare the statement using the query
           statement.prepare(query).then(() => {
 
@@ -101,9 +93,6 @@ async function getUsers(userFilter: UserFilter, startIndex: number, count: numbe
 
               //Add the offset and limit to the prepared values
               preparedFilterValues = {...preparedFilterValues,"offset":startIndex,"limit":count};
-
-              //TODO
-              debugPrintObject(preparedFilterValues);
 
               //Execute the PS
               statement.execute(preparedFilterValues).then((dbResult: IResult<any>) => {
@@ -138,16 +127,6 @@ async function getUsers(userFilter: UserFilter, startIndex: number, count: numbe
     });
   });
 };
-
-function debugPrintObject(obj:Object) :void 
-{
-    for (const [k, v] of Object.entries(obj))
-    {
-      console.log("      " + k + " -> " + v);
-    }
-
-    console.log("");
-}
 
 async function createSyntheticData(): Promise<boolean> {
   return new Promise((resolve, reject) => {
@@ -184,7 +163,7 @@ async function createSyntheticData(): Promise<boolean> {
             (6,'William','Harrison' ,'Esq','USA','President','william.harrison@email.com','123-345-4566','B','Engineering',0,'6' ,'/test6/' ,'wharrison'),
             (7,'Rose','Cleveland' ,'MS','USA','First Lady','rose.cleveland@email.com','123-234-3445','C','Operations',0,'6' ,'/test7/' ,'rcleveland'),
             (8,'Martha','Washington' ,'MFA','USA','First Lady','martha.washington@email.com','232-455-6643','D','Sales',0,'6' ,'/test8/' ,'mwashington'),
-            (9,'Sarah','Jackson' ,'Esq','USA','First Lady','sarah.jackson@email.com','234-233-4444','A','Engineering',0,'6' ,'/test9/' ,'sjackson'),
+            (9,'George','Washington' ,'Esq','USA','President','george.washington@email.com','234-233-4444','A','Engineering',0,'6' ,'/test9/' ,'sjackson'),
             (10,'Letitia','Tyler' ,'PhD','USA','First Lady','letitia.tyler@email.com','999-999-9999','B','Operations',0,'6' ,'/test10/' ,'ltyler'),
             (11,'Jane','Harrison' ,'MFA','USA','First Lady','jane.harrison@email.com','123-234-2342','C','Sales',0,'6' ,'/test11/' ,'jharrison'),
             (12,'John','Tyler' ,'MFA','USA','President','john.tyler@email.com','989-232-1223','D','Engineering',0,'6' ,'/test12/' ,'jtyler')`;
