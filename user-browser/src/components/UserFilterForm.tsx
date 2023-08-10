@@ -1,32 +1,28 @@
-import { Container, Row, Card } from "react-bootstrap";
+import { Container, Card } from "react-bootstrap";
 import InputForm from "./InputForm";
 import { useState } from "react";
-import UserFilter, { getBlankUserFilter } from "../types/UserFilter";
+import UserFilter, { updateFilterWithValue, getBlankUserFilter } from "../types/UserFilter";
 
 type UserFilterFormProps =
 {
     applyUserFilterFunction : Function
 };
 
-
-
 export default function UserFilterForm(props:UserFilterFormProps) {
 
+  //The user filter form holds a filter.
+  //When a user enters data into a form element, it's updated in state here
+  //Updates also cause applyUserFilterFunction to be called, which informs the parent component that a new filter is applied.
   const [userFilter,setUserFilter] = useState<UserFilter>(getBlankUserFilter());
 
   const applyUserFilter = async(label : string, value : string) => {
     
     let filter = userFilter;
 
-    //TODO: update the local state user filter with the newly saved value
-    console.log("Label is " + label);
-    console.log("Value is " + value);
-
-    value = value === undefined ? "" : value;
-
-    //TODO
-    filter.Email = value;
-
+    //Update the filter to apply the specified value for the label param, if it exists in the filter.
+    updateFilterWithValue(filter,label,value);
+    
+    //Update local state
     setUserFilter(filter);
 
     //Call the passed-in function to indicate the filter has been updated
@@ -34,26 +30,23 @@ export default function UserFilterForm(props:UserFilterFormProps) {
   }
 
     return (
-      <Container className="user-filter-form" fluid>
+      <Container className="user-filter-form">
       <Card>
-        <Row>
-          <InputForm
-            applyChange={applyUserFilter}
-            formLabel={"A"}
-            formDefaultValue={""}
-            formPlaceholderText={""}
-            showIcon={true}
-          />
-        </Row>
-        <Row>
-          <InputForm
-            applyChange={applyUserFilter}
-            formLabel={"B"}
-            formDefaultValue={""}
-            formPlaceholderText={""}
-            showIcon={true}
-          />
-        </Row>
+      {
+        Object.entries(userFilter).map((property : [string,string]) => {
+            return (
+              <InputForm
+                applyChange={applyUserFilter}
+                formLabel={property[0]}
+                formDefaultValue={""}
+                formPlaceholderText={""}
+                showIcon={false}
+                showButton={false}
+                showLabel={true}
+              />
+            );
+        })
+      }
       </Card>
       </Container>
     );
