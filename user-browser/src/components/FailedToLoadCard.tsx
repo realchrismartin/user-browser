@@ -1,4 +1,4 @@
-import { Col, Container, Row, Card } from "react-bootstrap";
+import { Container, Card } from "react-bootstrap";
 
 export default function FailedToLoadCard() {
     return (

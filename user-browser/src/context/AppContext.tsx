@@ -9,7 +9,7 @@ import AppUser from "../types/AppUser";
 import AppContext from "../types/AppContext";
 import AppError from "../types/AppError";
 import { permissionConfig } from "../config/Config";
-import { completeSignIn, getUserCount, signInUser, signOutUser } from "../service/APIService";
+import { completeSignIn, signInUser, signOutUser } from "../service/APIService";
 
 const appContext = createContext<AppContext>({
   appUser: undefined,

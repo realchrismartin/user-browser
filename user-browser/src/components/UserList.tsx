@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Accordion} from "react-bootstrap";
 
 import UserPage from "./UserPage";
 import PageList from "./PageList";
@@ -7,6 +7,8 @@ import UserFilter, { getBlankUserFilter } from "../types/UserFilter";
 import { getUserCount } from "../service/APIService";
 import UserFilterForm from "./UserFilterForm";
 import { useAppContext } from "../context/AppContext";
+import AccordionBody from "react-bootstrap/esm/AccordionBody";
+import AccordionHeader from "react-bootstrap/esm/AccordionHeader";
 
 export default function UserList() {
 
@@ -27,7 +29,7 @@ export default function UserList() {
 
     if(count === undefined)
     {
-      context.displayError!("Failed to get user counts :(");
+      context.displayError!("Failed to get user counts. Perhaps the application API is offline? :(");
       return;
     }
 
@@ -50,7 +52,7 @@ export default function UserList() {
       //On first load:
       //Set an initial user filter that has no criteria and then apply it.
       //This will also set the user count and active page.
-      applyUserFilter(getBlankUserFilter());
+      applyUserFilter(getBlankUserFilter()); //TODO: exhaustive-lint complains about this. Fix it later!
       setListPageLoaded(true);
     }
 
@@ -58,8 +60,15 @@ export default function UserList() {
 
 
   return (
-    <Container className="content">
-        <UserFilterForm applyUserFilterFunction={applyUserFilter} />
+    <Container className="user-list">
+        <Container className="user-filter-accordion">
+          <Accordion>
+              <AccordionHeader>Filter</AccordionHeader> 
+              <AccordionBody>
+                <UserFilterForm applyUserFilterFunction={applyUserFilter} />
+              </AccordionBody>
+          </Accordion>
+        </Container>
         <Row className="justify-content-md-center">
           <Col xl="10">
             <Row>

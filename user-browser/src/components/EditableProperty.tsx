@@ -76,6 +76,8 @@ export default function EditableProperty(props: EditablePropertyProps) {
             formPlaceholderText={""}
             formDefaultValue={props.value}
             showIcon={false}
+            showButton={true}
+            showLabel={false}
           />
         </Col>
       </Row>
