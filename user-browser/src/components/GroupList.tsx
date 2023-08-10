@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useAppContext } from "../context/AppContext";
 import { Container, Row, Col, Tab, Tabs } from "react-bootstrap";
 
 import InputForm from "./InputForm";
@@ -7,7 +6,6 @@ import GroupPage from "./GroupPage";
 import PageList from "./PageList";
 
 export default function GroupList() {
-  const context = useAppContext();
   const pageSize = 10;
   const pagesPerScreen = 5;
 
@@ -57,6 +55,8 @@ export default function GroupList() {
             formPlaceholderText={"Enter search term"}
             formDefaultValue={""}
             showIcon={true}
+            showButton={true}
+            showLabel={false}
           />
         </Row>
         <Tabs
