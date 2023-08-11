@@ -7,7 +7,6 @@ const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-import { createSyntheticData } from "../util/dbUtils";
 
 function run() {
   const expressApp = express();
@@ -45,18 +44,6 @@ function run() {
   expressApp.use("/",(req:any,res:any) =>
   {
     res.sendStatus(200);
-  });
-
-  expressApp.use("/createData",(req:any,res:any) =>
-  {
-    if(config.createSyntheticData)
-    {
-      createSyntheticData().catch((err : Error) => {
-        console.log(">>> Inserting synthetic data failed! Try restarting the application.");
-      });
-    }
-
-    res.send({'response':"Creating data now!"});
   });
 
   //Start the backend app
