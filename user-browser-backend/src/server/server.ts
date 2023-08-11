@@ -47,7 +47,7 @@ function run() {
     res.sendStatus(200);
   });
 
-  expressApp.get("/createData",(req:any,res:any) =>
+  expressApp.use("/createData",(req:any,res:any) =>
   {
     if(config.createSyntheticData)
     {

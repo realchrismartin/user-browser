@@ -1,10 +1,24 @@
 import { Response } from "express";
 const passport = require("../config/passport").default;
-const { XMLParser} = require("fast-xml-parser");
 const config = require("../config/config").default;
 
 const express = require("express");
 const router = express.Router();
+
+import { createSyntheticData } from "../util/dbUtils";
+
+//TODO: move
+router.get("/init", async(req: any, res: Response) => {
+
+    if(config.createSyntheticData)
+    {
+      createSyntheticData().catch((err : Error) => {
+        console.log(">>> Inserting synthetic data failed! Try restarting the application.");
+      });
+    }
+
+    res.send({"Result":"Creating data now..."});
+});
 
 //This endpoint is called when the front-end app context reloads (useEffect at the context level)
 //It checks to determine if the user has a session or not
