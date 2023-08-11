@@ -72,6 +72,9 @@ export default function UserList() {
         <Row className="justify-content-md-center">
           <Col xl="10">
             <Row>
+            Total Users: {userCount}
+            </Row>
+            <Row>
               <UserPage userFilter={userFilter} pageNumber={activePage} pageSize={pageSize} />
             </Row>
             <Row className="justify-content-md-center">

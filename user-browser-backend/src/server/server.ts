@@ -54,10 +54,8 @@ function run() {
 
     if(config.createSyntheticData)
     {
-      createSyntheticData().then(dataCreated => {
-        console.log(">>> Created and inserted synthetic data for testing.");
-      }).catch((err : Error) => {
-        console.log(">>> Skipped loading synthetic data: ",err);
+      createSyntheticData().catch((err : Error) => {
+        console.log(">>> Inserting synthetic data failed: ",err);
       });
     }
 

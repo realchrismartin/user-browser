@@ -40,8 +40,8 @@ const config = {
     server: process.env.NODE_APP_SUB_SQL_HOSTNAME || "localhost", //Hostname of the database. does NOT include a protocol or trailing slash.
 
     pool: {
-      max: 1, 
-      min: 0,
+      max: 5,
+      min: 1,
       idleTimeoutMillis: 30000,
     },
     options: {

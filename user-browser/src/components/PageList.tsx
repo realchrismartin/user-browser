@@ -85,6 +85,8 @@ export default function PageList(props: PageListProps) {
         <Pagination size="lg">{pages}</Pagination>
       </Col>
       <Col />
+      <Col>
+      Pages: {props.numPages}</Col>
     </Row>
   );
 }
