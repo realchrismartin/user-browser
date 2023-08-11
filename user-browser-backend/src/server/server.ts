@@ -47,17 +47,22 @@ function run() {
     res.sendStatus(200);
   });
 
-  //Start the backend app
-  expressApp.listen(config.port, () => {
-    
-    console.log("user-browser backend live on " + config.port);
-
+  expressApp.get("/createData",(req:any,res:any) =>
+  {
     if(config.createSyntheticData)
     {
       createSyntheticData().catch((err : Error) => {
         console.log(">>> Inserting synthetic data failed! Try restarting the application.");
       });
     }
+
+    res.send({'response':"Creating data now!"});
+  });
+
+  //Start the backend app
+  expressApp.listen(config.port, () => {
+    
+    console.log("user-browser backend live on " + config.port);
 
   });
 }
