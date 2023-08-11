@@ -55,7 +55,7 @@ function run() {
     if(config.createSyntheticData)
     {
       createSyntheticData().catch((err : Error) => {
-        console.log(">>> Inserting synthetic data failed: ",err);
+        console.log(">>> Inserting synthetic data failed! Try restarting the application.");
       });
     }
 

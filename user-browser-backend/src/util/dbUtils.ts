@@ -173,7 +173,6 @@ async function createSyntheticData(): Promise<boolean> {
           Promise.all(queryPromises).then((result : void[]) => {
            resolve(true);
           }).catch((err: Error) => {
-            console.log(err);
             reject(err);
           });
             
