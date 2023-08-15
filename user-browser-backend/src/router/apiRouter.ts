@@ -3,7 +3,7 @@ import { Response } from "express";
 import { getUsers, getUsersCount } from "../util/dbUtils";
 import { hasAdminAccess, hasWriteAccess } from "../util/authUtils"
 import {queryParamsToFilter} from "../util/userFilterUtils"
-import { createSyntheticData,tablesExist } from "../util/dbUtils";
+import { createSyntheticData} from "../util/dbUtils";
 
 //Router for processing requests for user data
 //It's assumed that the user is already authenticated by upstream middleware/processes
@@ -12,28 +12,27 @@ import { createSyntheticData,tablesExist } from "../util/dbUtils";
 const express = require("express");
 const router = express.Router();
 
+let createdTestData = !config.initTestData;
+
 router.get("/initTestData", async(req: any, res: Response) => {
 
-    if(!config.initTestData)
+    if(createdTestData)
     {
-        console.log("initTestData is set to false. Skipping creation of tables and data");
-        res.send({"Result":"Skipping data insertion."});
+        //Failsafe to prevent multiple queries
+        res.send({"Result":"Already set up database."});
         return;
     }
 
+    createdTestData = true; //Update the "global" to indicate that we created or tried to create data.
+
     try 
     {
-        let ready = await tablesExist();
-        if(!ready)
-        {
-            await createSyntheticData();
-            res.send({"Result":"Creating data now..."});
-        } else {
-            res.send({"Result":"createSyntheticData is set to true, but tables already exist. Skipping data creation."});
-        }
+        createSyntheticData();
     } catch {
-        res.send({"Result":"Encountered an error while setting up data."});
+        console.log("Encountered an error setting up the database :(");
     }
+
+    res.send({"Result":"Setting up database if required. Please wait."});
 });
 
 //Get a number of user records equal to the count, starting from the start index

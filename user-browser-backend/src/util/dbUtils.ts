@@ -129,84 +129,71 @@ async function getUsers(userFilter: UserFilter, startIndex: number, count: numbe
   });
 };
 
-async function tablesExist(): Promise<boolean> {
-
-  return new Promise((resolve, reject) => {
-
-    sql.connect(config.sql).then((connectionPool: ConnectionPool) => {
-
-      const checkUserTableExistsQuery = "SELECT TOP 1 FROM dbo.Users";
-
-        connectionPool.query(checkUserTableExistsQuery).then((dbResult: IResult<any>) => {
-          resolve(true);
-        }).catch((err : any) => { 
-            console.log("Select query to test if Users table exist failed. Table might not exist.");
-            resolve(false);
-         });
-    }).catch((err : any) => { 
-      console.log("Database connection failed. Table check failed.");
-      reject(false);
-    });
-  });
-};
-
 async function createSyntheticData(): Promise<boolean> {
+
   return new Promise((resolve, reject) => {
+
     sql.connect(config.sql).then((connectionPool: ConnectionPool) => {
 
-      const createTablesQuery = `CREATE TABLE Users (
-        UserID int PRIMARY KEY IDENTITY(1,1),
-        FirstName varchar(100),
-        LastName varchar(100),
-        Degree varchar(100),
-        Company varchar(100),
-        Title varchar(50),
-        Email varchar(100),
-        Phone varchar(12),
-        FDACenter varchar(50),
-        FDADivision varchar(50),
-        PrincipalInvestigator bit,
-        MainContact varchar(50),
-        NPI1Location varchar(50),
-        HPHCLogin varchar(50));`;
+      connectionPool.query("SELECT TOP 1 FROM dbo.Users").then((dbResult: IResult<any>) => {
+        resolve(true); //Data already exists
+      }).catch((err : any) => { 
 
-        let queryCount = 125;
-        let userCount = 1000;
+        //Data doesn't exist, the previous query failed.
 
-        let currentCount = 0; //Inserted count
-        let totalCount = queryCount * userCount;
+        const createTablesQuery = `CREATE TABLE Users (
+          UserID int PRIMARY KEY IDENTITY(1,1),
+          FirstName varchar(100),
+          LastName varchar(100),
+          Degree varchar(100),
+          Company varchar(100),
+          Title varchar(50),
+          Email varchar(100),
+          Phone varchar(12),
+          FDACenter varchar(50),
+          FDADivision varchar(50),
+          PrincipalInvestigator bit,
+          MainContact varchar(50),
+          NPI1Location varchar(50),
+          HPHCLogin varchar(50));`;
 
-        connectionPool.query(createTablesQuery).then((dbResult: IResult<any>) => {
+          let queryCount = 125;
+          let userCount = 1000;
 
-          const queryPromises = Array.from({ length: queryCount }, () =>{
-            new Promise((res, rej) => {
-              buildSyntheticData(userCount).then((query : string ) => {
-                connectionPool.query(query).then((dbResult : any) => {
-                  currentCount += userCount;
-                  let percentComplete = 100 * (currentCount / totalCount);
-                  console.log("> Inserted " + currentCount + "/" + totalCount + " users (" + percentComplete + "% complete)");
-                  res(true);
+          let currentCount = 0; //Inserted count
+          let totalCount = queryCount * userCount;
+
+          connectionPool.query(createTablesQuery).then((dbResult: IResult<any>) => {
+
+            const queryPromises = Array.from({ length: queryCount }, () =>{
+              new Promise((res, rej) => {
+                buildSyntheticData(userCount).then((query : string ) => {
+                  connectionPool.query(query).then((dbResult : any) => {
+                    currentCount += userCount;
+                    let percentComplete = 100 * (currentCount / totalCount);
+                    console.log("> Inserted " + currentCount + "/" + totalCount + " users (" + percentComplete + "% complete)");
+                    res(true);
+                  }).catch((err : any) => { rej(err); });
                 }).catch((err : any) => { rej(err); });
-              }).catch((err : any) => { rej(err); });
+              });
             });
-          });
 
-          Promise.all(queryPromises).then((result : void[]) => {
-           resolve(true);
+            Promise.all(queryPromises).then((result : void[]) => {
+              resolve(true);
+            }).catch((err: Error) => {
+              reject(err);
+            });
+              
           }).catch((err: Error) => {
+            //Query failed. Table exists somehow.
             reject(err);
           });
-            
-        }).catch((err: Error) => {
-          //Query failed. Table probably exists.
-          reject(err);
-        });
-      })
-      .catch((err: Error) => {
-        //Actual connection error
-        reject(err);
       });
-  })
+    }).catch((err: Error) => {
+      //Actual connection error
+      reject(err);
+    });
+  });
 }
 
 async function buildSyntheticData(userCount : number): Promise<string> {
@@ -234,4 +221,4 @@ async function buildSyntheticData(userCount : number): Promise<string> {
 
 }
 
-export { getUsers, getUsersCount, tablesExist, createSyntheticData }
+export { getUsers, getUsersCount, createSyntheticData }
