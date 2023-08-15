@@ -9,8 +9,9 @@ const config = {
   idpLogInURL: process.env.NODE_APP_SUB_IDP_LOGIN_URL || "https://changeme",
   idpLogOutURL: process.env.NODE_APP_SUB_IDP_LOGOUT_URL || "https://changemealso",
 
-  //Whether we create test data on application start
-  createSyntheticData: (process.env.NODE_APP_SUB_CREATE_DATA) !== undefined || false,
+  //Whether we create the database schema and test data on application start
+  //This should be FALSE or not set for production.
+  initTestData: (process.env.NODE_APP_SUB_CREATE_DATA) !== undefined || false,
 
   //Permission configuration for the API
   //Used by routes to decide who gets to do what

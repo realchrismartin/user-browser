@@ -129,6 +129,27 @@ async function getUsers(userFilter: UserFilter, startIndex: number, count: numbe
   });
 };
 
+async function tablesExist(): Promise<boolean> {
+
+  return new Promise((resolve, reject) => {
+
+    sql.connect(config.sql).then((connectionPool: ConnectionPool) => {
+
+      const checkUserTableExistsQuery = "SELECT TOP 1 FROM dbo.Users";
+
+        connectionPool.query(checkUserTableExistsQuery).then((dbResult: IResult<any>) => {
+          resolve(true);
+        }).catch((err : any) => { 
+            console.log("Select query to test if Users table exist failed. Table might not exist.");
+            resolve(false);
+         });
+    }).catch((err : any) => { 
+      console.log("Database connection failed. Table check failed.");
+      reject(false);
+    });
+  });
+};
+
 async function createSyntheticData(): Promise<boolean> {
   return new Promise((resolve, reject) => {
     sql.connect(config.sql).then((connectionPool: ConnectionPool) => {
@@ -213,4 +234,4 @@ async function buildSyntheticData(userCount : number): Promise<string> {
 
 }
 
-export { getUsers, getUsersCount, createSyntheticData }
+export { getUsers, getUsersCount, tablesExist, createSyntheticData }

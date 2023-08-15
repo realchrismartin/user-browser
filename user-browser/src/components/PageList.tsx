@@ -12,6 +12,9 @@ export default function PageList(props: PageListProps) {
   let screenStart = Math.floor(props.currPage - props.pagesPerScreen);
   screenStart = screenStart > 0 ? screenStart : 0;
 
+  console.log("PageList loaded page " + props.currPage);
+  console.log("Last page is " + Math.floor(props.numPages));
+
   if (props.numPages > 1) {
     pages.push(
       <Pagination.First
@@ -73,7 +76,7 @@ export default function PageList(props: PageListProps) {
     <Pagination.Last
       key="last"
       onClick={() => {
-        props.setActivePage(Math.floor(props.numPages));
+        props.setActivePage(props.numPages);
       }}
     />
   );

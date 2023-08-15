@@ -1,7 +1,9 @@
+import config from "../config/config";
 import { Response } from "express";
 import { getUsers, getUsersCount } from "../util/dbUtils";
 import { hasAdminAccess, hasWriteAccess } from "../util/authUtils"
 import {queryParamsToFilter} from "../util/userFilterUtils"
+import { createSyntheticData,tablesExist } from "../util/dbUtils";
 
 //Router for processing requests for user data
 //It's assumed that the user is already authenticated by upstream middleware/processes
@@ -9,6 +11,30 @@ import {queryParamsToFilter} from "../util/userFilterUtils"
 
 const express = require("express");
 const router = express.Router();
+
+router.get("/initTestData", async(req: any, res: Response) => {
+
+    if(!config.initTestData)
+    {
+        console.log("initTestData is set to false. Skipping creation of tables and data");
+        res.send({"Result":"Skipping data insertion."});
+        return;
+    }
+
+    try 
+    {
+        let ready = await tablesExist();
+        if(!ready)
+        {
+            await createSyntheticData();
+            res.send({"Result":"Creating data now..."});
+        } else {
+            res.send({"Result":"createSyntheticData is set to true, but tables already exist. Skipping data creation."});
+        }
+    } catch {
+        res.send({"Result":"Encountered an error while setting up data."});
+    }
+});
 
 //Get a number of user records equal to the count, starting from the start index
 router.get("/users", async (req: any, res: Response) => {
@@ -28,17 +54,23 @@ router.get("/users", async (req: any, res: Response) => {
         return;
     }
 
-    let users = await getUsers(queryParamsToFilter(req.query),startIndex,count);
-    res.send(users);
+    try {
+        let users = await getUsers(queryParamsToFilter(req.query),startIndex,count);
+        res.send(users);
+    } catch {
+        res.status(500).send("Encountered an error getting users.");
+    }
 });
 
 //Get a number of user records equal to the count, starting from the start index
 router.get("/users/count", async (req: any, res: Response) => {
 
-    let usersCount = await getUsersCount(queryParamsToFilter(req.query));
-
-    //TODO: handle error
-    res.send({"count":usersCount});
+    try {
+        let usersCount = await getUsersCount(queryParamsToFilter(req.query));
+        res.send({"count":usersCount});
+    } catch {
+        res.status(500).send("Encountered an error getting user count.");
+    }
 });
 
 //Update a user record.

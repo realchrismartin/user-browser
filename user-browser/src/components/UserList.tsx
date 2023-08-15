@@ -59,6 +59,8 @@ export default function UserList() {
   },[listPageLoaded,applyUserFilter]);
 
 
+  let userPageComponent = userCount <= 0 ? (<span></span>) : (<UserPage userFilter={userFilter} pageNumber={activePage} pageSize={pageSize} />)
+
   return (
     <Container className="user-list">
         <Container className="user-filter-accordion">
@@ -74,8 +76,8 @@ export default function UserList() {
             <Row>
             Total Users: {userCount}
             </Row>
+            {userPageComponent}
             <Row>
-              <UserPage userFilter={userFilter} pageNumber={activePage} pageSize={pageSize} />
             </Row>
             <Row className="justify-content-md-center">
               <PageList
