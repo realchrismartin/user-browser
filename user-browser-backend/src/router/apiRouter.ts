@@ -24,6 +24,7 @@ router.get("/initTestData", async(req: any, res: Response) => {
     }
 
     createdTestData = true; //Update the "global" to indicate that we created or tried to create data.
+    //This could be more elegant.
 
     try 
     {

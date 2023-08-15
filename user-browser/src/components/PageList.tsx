@@ -8,17 +8,13 @@ type PageListProps = {
 };
 
 export default function PageList(props: PageListProps) {
+
   let pages = [];
-  let screenStart = Math.floor(props.currPage - props.pagesPerScreen);
-  screenStart = screenStart > 0 ? screenStart : 0;
 
-  //Page count is passed in as a raw page count, but we index at 0.
-  let pageCount = props.numPages <= 0 ? 0 : (props.numPages - 1);
+  //If there is more than one page and we're not on the first page,
+  //Show a "return to first page" button and a "return to previous page" button
+  if (props.numPages > 1 && props.currPage > 0) {
 
-  console.log("PageList loaded page " + props.currPage);
-  console.log("Last page is " + Math.floor(props.numPages));
-
-  if (pageCount > 1) {
     pages.push(
       <Pagination.First
         key="first"
@@ -32,7 +28,7 @@ export default function PageList(props: PageListProps) {
       <Pagination.Prev
         key="prev"
         onClick={() => {
-          if (props.currPage > 1) {
+          if (props.currPage > 0) {
             props.setActivePage(props.currPage - 1);
           }
         }}
@@ -40,49 +36,52 @@ export default function PageList(props: PageListProps) {
     );
   }
 
-  let index = 0;
-  for (let i = screenStart; i < pageCount; i++) {
-    index++;
+  //Add page indices up to either the pagesPerScreen limit OR the number of pages, whichever is lower.
+  let screenEnd = Math.min(props.currPage + props.pagesPerScreen,props.numPages);
 
-    if (index > props.pagesPerScreen) {
-      break;
-    }
-
+  //Show a page selector for each page between the current page and ... the # of pages per screen
+  for (let i = props.currPage; i < screenEnd ; i++) 
+  {
+    //Visually, the pagination appears one page higher  than it "is" bc users don't like indexing at 0 (i+1)
     pages.push(
       <Pagination.Item
         key={i}
         active={i === props.currPage}
         onClick={() => {
-          props.setActivePage(i);
+          if(i !== props.currPage)
+          {
+            props.setActivePage(i);
+          }
         }}
       >
-        {i}
+        {i+1}
       </Pagination.Item>
     );
   }
 
-  pages.push(
-    <Pagination.Next
-      key="next"
-      onClick={() => {
-        if (
-          props.currPage !== props.numPages &&
-          props.currPage + 1 < props.numPages
-        ) {
-          props.setActivePage(props.currPage + 1);
-        }
-      }}
-    />
-  );
+  //If there is more than one page and we're not on the last page,
+  //Show "go to last page" and "next page" buttons
+  if(props.numPages > 1 && props.currPage < (props.numPages - 1))
+  {
+    pages.push(
+      <Pagination.Next
+        key="next"
+        onClick={() => {
+            props.setActivePage(props.currPage + 1);
+        }}
+      />
+    );
 
-  pages.push(
-    <Pagination.Last
-      key="last"
-      onClick={() => {
-        props.setActivePage(pageCount);
-      }}
-    />
-  );
+    pages.push(
+      <Pagination.Last
+        key="last"
+        onClick={() => {
+          props.setActivePage(props.numPages - 1);
+        }}
+      />
+    );
+  }
+
 
   return (
     <Row>

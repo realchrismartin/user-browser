@@ -157,7 +157,7 @@ async function createSyntheticData(): Promise<boolean> {
           NPI1Location varchar(50),
           HPHCLogin varchar(50));`;
 
-          let queryCount = 125;
+          let queryCount = 100;
           let userCount = 1000;
 
           let currentCount = 0; //Inserted count
