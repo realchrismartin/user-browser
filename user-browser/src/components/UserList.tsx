@@ -17,49 +17,43 @@ export default function UserList() {
 
   const context = useAppContext();
 
-  const [listPageLoaded, setListPageLoaded] = useState<boolean>(false);
   const [activePage, setActivePage] = useState<number>(0);
   const [userCount,setUserCount] = useState<number>(0);
   const [userFilter,setUserFilter] = useState<UserFilter>(getBlankUserFilter());
 
-  const applyUserFilter = async(filter:UserFilter) => {
-
-    //Look up the new user count with the filter applied and save it.
-    const count = await getUserCount(filter);
-
-    if(count === undefined)
-    {
-      context.displayError!("Failed to get user counts. Perhaps the application API is offline? :(");
-      return;
-    }
-
-    //Set the new count.
-    setUserCount(count);
-
-    //Set the filter that was requested.
-    //This HAS to be a different object than the original, so we recreate it here
-    //This is due to referential equality - otherwise the underlying page won't update because the object is the "same"
+  const applyUserFilter = (filter:UserFilter) => {
+    console.log("Applied an updated filter due to the user editing the filter form.");
     setUserFilter({...filter});
-    
-    //Set the active page to the first page, page 0.
-    setActivePage(0);
   }
 
   useEffect(() => {
 
-    if(!listPageLoaded)
+    let load = async(filter : UserFilter) => 
     {
-      //On first load:
-      //Set an initial user filter that has no criteria and then apply it.
-      //This will also set the user count and active page.
-      applyUserFilter(getBlankUserFilter()); //TODO: exhaustive-lint complains about this. Fix it later!
-      setListPageLoaded(true);
-    }
+      const filterResultCount = await getUserCount(filter);
 
-  },[listPageLoaded,applyUserFilter]);
+      if(filterResultCount === undefined)
+      {
+        return;
+      }
 
+      console.log("Reloaded due to an updated filter. This many users matched: " + filterResultCount);
+
+      setUserFilter(filter);
+
+      //Set the new count.
+      setUserCount(filterResultCount);
+
+      //Set the active page to the first page, page 0.
+      setActivePage(0);
+  };
+
+  load(userFilter);
+
+  },[userFilter]);
 
   let userPageComponent = userCount <= 0 ? (<span></span>) : (<UserPage userFilter={userFilter} pageNumber={activePage} pageSize={pageSize} />)
+  let pageCount = Math.ceil(userCount * 1.0 / pageSize);
 
   return (
     <Container className="user-list">
@@ -76,14 +70,17 @@ export default function UserList() {
             <Row>
             Total Users: {userCount}
             </Row>
-            {userPageComponent}
             <Row>
+            Across Pages: {pageCount}
+            </Row>
+            <Row>
+              {userPageComponent}
             </Row>
             <Row className="justify-content-md-center">
               <PageList
                 setActivePage={setActivePage}
                 pagesPerScreen={pagesPerScreen}
-                numPages={Math.ceil(userCount * 1.0 / pageSize)}
+                numPages={pageCount}
                 currPage={activePage}
               />
             </Row>
