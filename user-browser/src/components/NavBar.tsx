@@ -7,8 +7,6 @@ import {
   NavItem,
 } from "react-bootstrap";
 
-import logo from "../img/logo.png";
-
 import AuthenticatedSection from "./AuthenticatedSection";
 import { useAppContext } from "../context/AppContext";
 
@@ -19,7 +17,6 @@ export default function NavBar() {
   return (
     <Navbar bg="dark" variant="dark" expand="md">
       <Container>
-        <img className="logo" src={logo} alt="Sentinel User Browser" />
         <Navbar.Brand className="app-title" href="/">
          User Browser Demo
         </Navbar.Brand>

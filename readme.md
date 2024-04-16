@@ -1,4 +1,4 @@
-# Sentinel User Browser
+# User Browser
 
 # Running the development environment
 * Create a Crowd (or other IDP) configuration and set:
