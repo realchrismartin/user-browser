@@ -21,7 +21,7 @@
 
 The intended purpose of this project was to provide a proof-of-concept for a replacement of a specific enterprise software component whose purpose was to provide interactive IAM services to administrator users of a larger system. Administrator users needed to be able to manage permissions and metadata for a large number of principals/users/people in a helpful user interface.
 
-This project was also an excuse to explore React Hooks as an alternative to Redux for front-end state management. Moreover, it provided a convenient avenue to play with pagination concepts and SAML 2.0 claims-based authentication!
+This project was also an excuse to explore React Hooks as an alternative to Redux for front-end state management. Moreover, it provided a convenient avenue to play with pagination concepts and SAML claims-based authentication!
 
 Not all of the functionality in this project is completed. Specifically, writing data to individual user records remains unimplemented, and functionality related to "group" management is nonfunctional.
 
@@ -34,14 +34,13 @@ Not all of the functionality in this project is completed. Specifically, writing
 
 ### Features
 
-- Log in using any SAML 2.0 IDP (identity provider)
+- Log in using any SAML IDP (identity provider)
 - View and review the properties of individual users
 - Search among all users in the system to find those users with specific properties
 
 ### Usage 
 This project is packaged using `docker-compose`. A few minor modifications are required prior to running it:
 
-#### Prerequisites
 * Create a SAML Identity Provider configuration. This has been tested using Azure Entra ID and Atlassian Crowd, but any provider should work. Specifically, set:
 
 * * `Entity ID` to some value. This will be used as the IDP_ISSUER below.
