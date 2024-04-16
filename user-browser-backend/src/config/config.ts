@@ -64,7 +64,7 @@ const config = {
     saml: {
       entryPoint: (process.env.NODE_APP_SUB_BACKEND_URL || "http://localhost:8080") + '/saml/loopback', 
       protocol: (process.env.NODE_APP_SUB_BACKEND_URL || "http://localhost").indexOf("https") > -1 ? "https" : "http",
-      issuer: process.env.NODE_APP_SUB_IDP_ISSUER || "sentinel-user-browser", 
+      issuer: process.env.NODE_APP_SUB_IDP_ISSUER || "user-browser", 
       cert: process.env.NODE_APP_SUB_IDP_CERT || "dontputarealcerthere"
     }
   },
