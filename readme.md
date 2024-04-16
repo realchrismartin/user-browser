@@ -3,7 +3,7 @@
   <h1>User Browser</h1>
   
   <p>
-  A web application that provides an interface for managing users (a.k.a. "people") 
+	A web application that provides an interface for managing users (a.k.a. "people") 
   </p>
 
 </div>
@@ -23,14 +23,16 @@ The intended purpose of this project was to provide a proof-of-concept for a rep
 
 This project was also an excuse to explore React Hooks as an alternative to Redux for front-end state management. Moreover, it provided a convenient avenue to play with pagination concepts and SAML claims-based authentication!
 
+I chose TypeScript for all components of this project because, despite the occasional cumbersome nature of defining React types accurately, I find static type checking to be extremely valuable in error prevention.
+
 Not all of the functionality in this project is completed. Specifically, writing data to individual user records remains unimplemented, and functionality related to "group" management is nonfunctional.
 
 ### Tech Stack
 
-<img src="https://img.shields.io/badge/Typescript" alt="language" />
-<img src="https://img.shields.io/badge/React.js" alt="library" />
-<img src="https://img.shields.io/badge/Node.js" alt="library" />
-<img src="https://img.shields.io/badge/Passport.js" alt="library" />
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#)
+[![React](https://img.shields.io/badge/React-%2320232a.svg?logo=react&logoColor=%2361DAFB)](#)
+[![NodeJS](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white)](#)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=fff)](#)
 
 ### Features
 
@@ -39,9 +41,9 @@ Not all of the functionality in this project is completed. Specifically, writing
 - Search among all users in the system to find those users with specific properties
 
 ### Usage 
-This project is packaged using `docker-compose`. A few minor modifications are required prior to running it:
+This project is packaged using `docker-compose`. A few minor modifications to the `compose.yml` are required prior to running it:
 
-* Create a SAML Identity Provider configuration. This has been tested using Azure Entra ID and Atlassian Crowd, but any provider should work. Specifically, set:
+* Create a SAML Identity Provider configuration in your IDP of choice. This has been tested using Azure Entra ID and Atlassian Crowd, but any provider should work. Specifically, set:
 
 * * `Entity ID` to some value. This will be used as the IDP_ISSUER below.
 * * `Assertion Consumer Service URL` to `http://localhost:8080/saml/consume`
