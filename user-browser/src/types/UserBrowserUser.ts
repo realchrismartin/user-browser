@@ -1,7 +1,7 @@
 import UserBrowserGroup from "./UserBrowserGroup";
 
-//Represents a user record in the SUB database
-//Not to be confused with an AppUser (i.e. someone who can log into SUB and use it)
+//Represents a user record in the UB database
+//Not to be confused with an AppUser (i.e. someone who can log into UB and use it)
 
 export type UserBrowserUser = {
   userID: string;
@@ -12,8 +12,8 @@ export type UserBrowserUser = {
   title: string | undefined | null;
   email: string | undefined | null;
   phone: string | undefined | null;
-  fdaCenter: string | undefined | null;
-  fdaDivision: string | undefined | null;
+  center: string | undefined | null;
+  division: string | undefined | null;
   principalInvestigator: boolean | undefined | null;
   mainContact: string | undefined | null;
   npiLocation: string | undefined | null;
@@ -40,8 +40,8 @@ export function getUserFromJson(user: any): UserBrowserUser {
     title: user["Title"],
     email: user["Email"],
     phone: user["Phone"],
-    fdaCenter: user["FDACenter"],
-    fdaDivision: user["FDADivision"],
+    center: user["Center"],
+    division: user["Division"],
     principalInvestigator: user["PrincipalInvestigator"],
     mainContact: user["MainContact"],
     npiLocation: user["NPI1Location"],

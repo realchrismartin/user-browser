@@ -150,8 +150,8 @@ async function createSyntheticData(): Promise<boolean> {
           Title varchar(50),
           Email varchar(100),
           Phone varchar(12),
-          FDACenter varchar(50),
-          FDADivision varchar(50),
+          Center varchar(50),
+          Division varchar(50),
           PrincipalInvestigator bit,
           MainContact varchar(50),
           NPI1Location varchar(50),
@@ -200,7 +200,7 @@ async function buildSyntheticData(userCount : number): Promise<string> {
 
   return new Promise((resolve, reject) => {
 
-  let query = `INSERT INTO [dbo].[Users]([FirstName],[LastName],[Degree],[Company],[Title],[Email],[Phone],[FDACenter] ,[FDADivision] ,[PrincipalInvestigator] ,[MainContact] ,[NPI1Location] ,[HPHCLogin]) VALUES `   
+  let query = `INSERT INTO [dbo].[Users]([FirstName],[LastName],[Degree],[Company],[Title],[Email],[Phone],[Center] ,[Division] ,[PrincipalInvestigator] ,[MainContact] ,[NPI1Location] ,[HPHCLogin]) VALUES `   
 
     for(let i = 0; i < userCount; i++)
     {

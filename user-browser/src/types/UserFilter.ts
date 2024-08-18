@@ -6,8 +6,8 @@ type UserFilter = {
   Title: string,
   Email: string,
   Phone: string,
-  FDACenter: string,
-  FDADivision: string,
+  Center: string,
+  Division: string,
   PrincipalInvestigator: string,
   MainContact: string,
   NPI1Location: string,
@@ -24,8 +24,8 @@ export function getBlankUserFilter() : UserFilter {
     Title:"",
     Email:"",
     Phone:"",
-    FDACenter:"",
-    FDADivision:"",
+    Center:"",
+    Division:"",
     PrincipalInvestigator:"",
     MainContact:"",
     NPI1Location:"",
@@ -72,14 +72,14 @@ export function updateFilterWithValue(userFilter: UserFilter, key : string, valu
       userFilter.Phone = value;
       break;
     }
-    case("FDACenter"):
+    case("Center"):
     {
-      userFilter.FDACenter = value;
+      userFilter.Center = value;
       break;
     }
-    case("FDADivision"):
+    case("Division"):
     {
-      userFilter.FDADivision = value;
+      userFilter.Division = value;
       break;
     }
     case("PrincipalInvestigator"):

@@ -1,6 +1,6 @@
 {
-  "short_name": "Sentinel User Browser",
-  "name": "Sentinel User Browser",
+  "short_name": "User Browser",
+  "name": "User Browser",
   "icons": [
     {
       "src": "favicon.ico",
