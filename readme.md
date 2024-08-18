@@ -3,12 +3,12 @@
   <h1>User Browser</h1>
   
   <p>
-	A web application that provides an interface for managing users (a.k.a. "people") 
+  User Metadata Management Web Application
   </p>
 
 </div>
 
-![screenshot](preview.png)
+![screenshot](img/preview.png)
 
 # Table of Contents
 
@@ -19,13 +19,7 @@
 
 ## About the Project
 
-The intended purpose of this project was to provide a proof-of-concept for a replacement of a specific enterprise software component whose purpose was to provide interactive IAM services to administrator users of a larger system. Administrator users needed to be able to manage permissions and metadata for a large number of principals/users/people in a helpful user interface.
-
-This project was also an excuse to explore React Hooks as an alternative to Redux for front-end state management. Moreover, it provided a convenient avenue to play with pagination concepts and SAML claims-based authentication!
-
-I chose TypeScript for all components of this project because, despite the occasional cumbersome nature of defining React types accurately, I find static type checking to be extremely valuable in error prevention.
-
-Not all of the functionality in this project is completed. Specifically, writing data to individual user records remains unimplemented, and functionality related to "group" management is nonfunctional.
+This project provides interactive identity and access management (IAM) services through a web interface. It was originally created as a proof-of-concept for integration with Microsoft Azure Entra ID. User Browser leverages React Hooks for front-end state management and aims to provide performant and secure CRUD operations in a simple UI.
 
 ### Tech Stack
 
@@ -36,9 +30,8 @@ Not all of the functionality in this project is completed. Specifically, writing
 
 ### Features
 
-- Log in using any SAML IDP (identity provider)
-- View and review the properties of individual users
-- Search among all users in the system to find those users with specific properties
+- **SAML Authentication**: Any SAML-capable identity provider can be used to grant secure access to the application.
+- **Pagination and "big data" support**: Quickly search through _many_ records to find the ones you're looking for.
 
 ### Usage 
 This project is packaged using `docker-compose`. A few minor modifications to the `compose.yml` are required prior to running it:
@@ -71,3 +64,5 @@ This project is packaged using `docker-compose`. A few minor modifications to th
 `NODE_APP_SUB_IDP_CERT` to the certificate value specified above.
 
 * Run the application components in Compose: `docker compose up`
+
+* (Optional): Add synthetic test data by querying `http://localhost:8080/api/initTestData`
